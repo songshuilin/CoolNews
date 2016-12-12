@@ -2,30 +2,122 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_show_news"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="view.ShowNewsActivity"
     tools:showIn="@layout/app_bar_show_news">
 
 
-       <android.support.design.widget.TabLayout
-           android:id="@+id/song_tab_title"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           app:tabIndicatorColor="#00ffff"
-           app:tabMode="scrollable"
-           app:tabTextColor="#000"
-           />
+    <LinearLayout
+        android:id="@+id/content_show_news"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-       <android.support.v4.view.ViewPager
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:id="@+id/viewpager"
-           >
-       </android.support.v4.view.ViewPager>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <android.support.design.widget.TabLayout
+                android:id="@+id/news_tab_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                app:tabIndicatorColor="#00ffff"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="#fff"
+                app:tabTextColor="#000" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/news_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/picture_tab_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                app:tabIndicatorColor="#00ffff"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="#fff"
+                app:tabTextColor="#000" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/picture_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/vedio_tab_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                app:tabIndicatorColor="#00ffff"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="#fff"
+                app:tabTextColor="#000" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vedio_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/music_tab_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#3F51B5"
+                app:tabIndicatorColor="#00ffff"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="#fff"
+                app:tabTextColor="#000" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/music_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+            </android.support.v4.view.ViewPager>
+
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
+
+

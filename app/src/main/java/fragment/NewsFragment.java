@@ -1,6 +1,7 @@
 package fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.edu.coolnews.R;
 
@@ -18,6 +20,7 @@ import adapter.NewsAdapter;
 import https.GetNewsAPI;
 import model.NewsBean;
 import model.OnNetRequestListener;
+import view.ReadNewsActivity;
 
 
 public class NewsFragment extends Fragment {
@@ -31,7 +34,7 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         if (view == null) {
@@ -40,15 +43,6 @@ public class NewsFragment extends Fragment {
             Bundle bundle = getArguments();
             type = bundle.getString("type");
             GetNewsAPI.getNews(type, 20, null, 1, new OnNetRequestListener() {
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
 
                 @Override
                 public void onSuccess(NewsBean data) {
@@ -57,6 +51,16 @@ public class NewsFragment extends Fragment {
                           mRecyclerView.setLayoutManager(layoutManager);
                           layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                           adapter = new NewsAdapter(data.getNewslist(), getActivity());
+                         adapter.setListener(new NewsAdapter.OnClickItemListener() {
+                             @Override
+                             public void OnClickItem(View view, NewsBean.NewslistBean newslistBean) {
+                                 Intent intent=new Intent(getActivity(), ReadNewsActivity.class);
+                                 intent.putExtra("url",newslistBean.getUrl());
+                                 intent.putExtra("title",newslistBean.getTitle());
+                                 intent.putExtra("imgurl",newslistBean.getPicUrl());
+                                 startActivity(intent);
+                             }
+                         });
                           mRecyclerView.setAdapter(adapter);
                       }
                 }
@@ -80,6 +84,7 @@ public class NewsFragment extends Fragment {
      */
     private void initView() {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
     }
 
 }

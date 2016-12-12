@@ -3,11 +3,17 @@ package com.example.edu.coolnews;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
+import constants.Constant;
 import https.GetNewsAPI;
+import https.GetPictureAPI;
+import model.PictureBean;
 
 import static org.junit.Assert.*;
 
