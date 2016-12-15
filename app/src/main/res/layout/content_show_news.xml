@@ -25,7 +25,7 @@
                 android:id="@+id/news_tab_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#3F51B5"
+                android:background="?attr/colorPrimary"
                 app:tabIndicatorColor="#00ffff"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="#fff"
@@ -51,7 +51,7 @@
                 android:id="@+id/picture_tab_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#3F51B5"
+                android:background="?attr/colorPrimary"
                 app:tabIndicatorColor="#00ffff"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="#fff"
@@ -76,11 +76,13 @@
                 android:id="@+id/vedio_tab_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#3F51B5"
+                android:background="?attr/colorPrimary"
                 app:tabIndicatorColor="#00ffff"
-                app:tabMode="scrollable"
                 app:tabSelectedTextColor="#fff"
-                app:tabTextColor="#000" />
+                app:tabTextColor="#000"
+                app:tabMode="fixed"
+                app:paddingStart="20dp"
+                />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vedio_viewpager"
@@ -101,7 +103,7 @@
                 android:id="@+id/music_tab_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#3F51B5"
+                android:background="?attr/colorPrimary"
                 app:tabIndicatorColor="#00ffff"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="#fff"

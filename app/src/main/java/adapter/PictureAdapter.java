@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.edu.coolnews.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.MyHodler
         //随机高度集合
         mheight=new ArrayList<Integer>();
         for(int i=0;i<list.size();i++){
-            mheight.add((int)(150+Math.random()*300));
+            mheight.add((int)(250+Math.random()*400));
         }
     }
 
@@ -78,9 +80,16 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.MyHodler
         holder.draweeView.setLayoutParams(lp);
 
         Uri uri = Uri.parse(list.get(position).getPictureUrl());
-        holder.draweeView.setImageURI(uri);
+       // holder.draweeView.setImageURI(uri);
         holder.imgTitle.setText(list.get(position).getPictureTitle());
 
+        PipelineDraweeController controller =
+                (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setUri(uri)
+                        .setOldController(holder.draweeView.getController())
+                        .setAutoPlayAnimations(true) //自动播放gif动画
+                        .build();
+        holder.draweeView.setController(controller);
         holder.itemView.setTag(list.get(position));//为item设置tag,
     }
 

@@ -47,6 +47,17 @@ public interface Constant {
     String PICTURE_POSTER="海报";
     String TAB_PICTURE[] = {PICTURE_STAR,PICTURE_CAR,PICTURE__ANIMAL,PICTURE_FUN
     ,PICTURE_LOVELY,PICTURE_POSTER
-
     };
+
+
+    /**
+     * 视频
+     */
+    //tring VEDIO_URL="http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1";
+     String VEDIO_URL="http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1#";
+
+    String  VEDIO_ONLINE="在线视频";
+    String   VEDIO_UNLINE="离线视频";
+
+    String TAB_VEDIO[]={VEDIO_ONLINE,VEDIO_UNLINE};
 }

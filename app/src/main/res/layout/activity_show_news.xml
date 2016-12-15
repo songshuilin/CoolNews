@@ -5,7 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:openDrawer="start">
 
     <include
@@ -14,11 +15,12 @@
         android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
+        layout_margin="?attr/actionBarSize"
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
         app:headerLayout="@layout/nav_header_show_news"
         app:menu="@menu/activity_show_news_drawer" />
 

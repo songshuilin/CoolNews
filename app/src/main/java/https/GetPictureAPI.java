@@ -27,7 +27,7 @@ public class GetPictureAPI {
         try {
             String url=getUrlForType(type);
             Document document = Jsoup.connect(url).get();
-            Log.i("TAGbb", "getPictureList: " + document.toString());
+            String str=document.toString();
             Elements meinv = document.getElementsByClass("listUll");
             Elements meinvs = meinv.get(1).getElementsByClass("libox");
 

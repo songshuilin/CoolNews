@@ -4,6 +4,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        //状态栏的颜色
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
+
+
 </resources>

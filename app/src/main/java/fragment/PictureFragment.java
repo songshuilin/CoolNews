@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class PictureFragment extends Fragment {
                         @Override
                         public void OnClickItem(View view, PictureBean pictureBean) {
                             Toast.makeText(getActivity(),pictureBean.toString(),Toast.LENGTH_SHORT).show();
+                            Log.i("TAG", "OnClickItem: "+pictureBean.toString());
                         }
                     });
                     break;

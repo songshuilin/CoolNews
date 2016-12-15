@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="view.ShowNewsActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -17,24 +16,31 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title="新闻简读"
-            />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="新闻简读" />
 
     </android.support.design.widget.AppBarLayout>
 
 
-
     <include layout="@layout/content_show_news" />
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <custom.FloatingActionMenu
+        android:id="@+id/floating_actions_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
+
+    </custom.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

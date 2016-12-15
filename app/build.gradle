@@ -4,6 +4,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {
+
         applicationId "com.example.edu.coolnews"
         minSdkVersion 19
         targetSdkVersion 24
@@ -26,14 +27,27 @@ dependencies {
     })
     compile files('libs/ShareSDK-Alipay-2.7.10.jar')
     compile files('libs/jsoup-1.8.1.jar')
+    //解决依赖冲突问题
+    compile('com.squareup.retrofit2:retrofit:2.1.0') { exclude group: 'com.squareup.okhttp3' }
+    compile('com.squareup.retrofit2:converter-gson:2.1.0') {
+        exclude group: 'com.google.code.gson'
+        exclude group: 'com.squareup.okhttp3'
+    }
+    //3.5.0：请务必查看下面注释[1]
+    //    //bmob-push：Bmob的推送包
+    //    compile 'cn.bmob.android:bmob-push:0.8'
+    //
+    //    //bmob-sms ：Bmob单独为短信服务提供的包
+    //    compile 'cn.bmob.android:bmob-sms:1.0.1'
+    compile project(':vitamio')
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.facebook.fresco:fresco:0.14.1'
-    compile 'com.github.rey5137:material:1.2.2'
+    compile 'com.facebook.fresco:animated-gif:0.14.1'
+    compile 'cn.bmob.android:bmob-sdk:3.5.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
     testCompile 'junit:junit:4.12'
 }
