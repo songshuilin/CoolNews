@@ -29,6 +29,7 @@ import event.VedioEvent;
 import https.GetVedioAPI;
 import model.VedioBean;
 import model.VedioLocalBean;
+import util.DividerItemDecoration;
 import util.ToastUtil;
 import view.PlayVedioActivity;
 
@@ -49,8 +50,10 @@ public class VedioFragment extends Fragment {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(layoutManager);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST));
             switch (msg.what) {
                 case 0x123:
+                    Log.i("TAGaaaaaaaaaa", "handleMessage:.................... ");
                     adapter = new VedioAdapter(list, getActivity());
                     mRecyclerView.setAdapter(adapter);
                     adapter.setListener(new VedioAdapter.OnClickItemListener() {
@@ -89,7 +92,6 @@ public class VedioFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -102,6 +104,7 @@ public class VedioFragment extends Fragment {
             view = inflater.inflate(R.layout.fragment_vedio, container, false);
             initView();
             if (Constant.VEDIO_ONLINE.equals(type)){
+                EventBus.getDefault().register(this);
                 GetVedioAPI.queryVedioBeanAll();//获取在线视频
             }else if (Constant.VEDIO_UNLINE.equals(type)){
                 getLocalVedio();//获取本地视频
@@ -126,10 +129,10 @@ public class VedioFragment extends Fragment {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe()
     public void getVedioList(VedioEvent event) {
         list = event.getList();
-        Log.i("bbbb", "getVedioList: "+list);
+        Log.i("bbbbfff", "getVedioList: "+list);
         handler.sendEmptyMessage(0x123);
     }
 

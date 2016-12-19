@@ -6,6 +6,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         //状态栏的颜色
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <!--<item name="android:listDivider">@drawable/divider_bg</item>-->
     </style>
 
 

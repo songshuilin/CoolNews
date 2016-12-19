@@ -19,17 +19,13 @@
             android:id="@+id/menu_musics"
             android:icon="@mipmap/ic_music"
             android:title="音乐轻听" />
-    </group>
-
-    <group android:checkableBehavior="single">
-
 
     <item android:title="新闻搜索"
         android:id="@+id/menu_search"
         android:icon="@mipmap/menu_search"
         />
 
-    <item android:title="日间模式"
+    <item android:title="模式切换"
         android:id="@+id/menu_mode"
         android:icon="@mipmap/menu_theme_day"
         />

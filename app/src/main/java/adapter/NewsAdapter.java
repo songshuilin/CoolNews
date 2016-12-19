@@ -3,6 +3,7 @@ package adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyHodler>
     public void onBindViewHolder(MyHodler holder, int position) {
         holder.time.setText(list.get(position).getCtime());
         holder.desc.setText(list.get(position).getDescription());
-        holder.title.setText(list.get(position).getTitle());
+        holder.title.setText(Html.fromHtml(list.get(position).getTitle()));
 
         if (TextUtils.isEmpty(list.get(position).getPicUrl())){
             holder.draweeView.setVisibility(View.GONE);

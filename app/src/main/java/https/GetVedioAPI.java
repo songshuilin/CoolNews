@@ -74,6 +74,7 @@ public class GetVedioAPI {
             @Override
             public void done(List<VedioBean> object, BmobException e) {
                 if (object != null) {
+                    Log.i("TAGpp", "done: ......................");
                     EventBus.getDefault().post(new VedioEvent(object));//发布事件
                 } else {
                     Log.i("bmob", "失败：" + e.getMessage() + "," + e.getErrorCode());

@@ -74,7 +74,8 @@ public class VedioLocalAdapter extends RecyclerView.Adapter<VedioLocalAdapter.My
         String data=TimeUtil.formatDuring(list.get(position).getDuration());
         holder.vedioTime.setText(data);
         float size= (float) (list.get(position).getSize()/(1024.0*1024.0));
-        holder.vedioSize.setText(size+"M");
+        float  a  =   (float)(Math.round(size*100))/100;
+        holder.vedioSize.setText(a+"M");
         holder.draweeView.setImageBitmap(list.get(position).getThumbnail());
         holder.itemView.setTag(list.get(position));//为item设置tag,
     }

@@ -1,11 +1,14 @@
 package view;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +32,15 @@ import java.util.List;
 import adapter.FragmentAdapter;
 import constants.Constant;
 import custom.FloatingActionMenu;
+import fragment.MusicFragment;
 import fragment.PictureFragment;
 import fragment.NewsFragment;
 import fragment.VedioFragment;
+import https.GetMusicAPI;
+import https.GetNewsForSearch;
 import https.GetVedioAPI;
 import model.VedioBean;
+import util.ToastUtil;
 
 
 public class ShowNewsActivity extends AppCompatActivity
@@ -56,6 +63,13 @@ public class ShowNewsActivity extends AppCompatActivity
     private FragmentAdapter adapter;
     private LinearLayout newsLinner;
     private FloatingActionMenu floatingActionMenu;
+    private SharedPreferences.Editor editor;
+    private boolean isDay=true;
+    private AppCompatDelegate ad;
+    private View handView;
+   private ImageView userImg;
+    private LinearLayout my_favorites;
+    private LinearLayout download;
 
 
     @Override
@@ -70,7 +84,7 @@ public class ShowNewsActivity extends AppCompatActivity
         mDl.setDrawerListener(toggle);
         toggle.syncState();
         getNewsList();
-
+        editor=getSharedPreferences("day_night_mode",MODE_PRIVATE).edit();
     }
 
     private void initData() {
@@ -96,6 +110,13 @@ public class ShowNewsActivity extends AppCompatActivity
         vedioViewpage = (ViewPager) findViewById(R.id.vedio_viewpager);
         musicViewpage = (ViewPager) findViewById(R.id.music_viewpager);
         newsLinner = (LinearLayout) findViewById(R.id.content_show_news);
+        handView=mNv.getHeaderView(0);
+        download= (LinearLayout) handView.findViewById(R.id.download);
+        my_favorites= (LinearLayout) handView.findViewById(R.id.my_favorites);
+        userImg= (ImageView) handView.findViewById(R.id.usernameImg);
+        my_favorites.setOnClickListener(this);
+        download.setOnClickListener(this);
+        userImg.setOnClickListener(this);
         mNv.setNavigationItemSelectedListener(this);
         addPopMenuView();//添加菜单
         setVisible(0);
@@ -151,13 +172,13 @@ public class ShowNewsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            VedioBean bean=new VedioBean();
-            bean.setVedio_title("金牌调解20161208 逝去的亲情");
-            bean.setVedio_url("http://dianbo01.jxtvcn.com.cn/jxwlgbdst/vod/" +
-                    "2016/12/08/3e54ee410d3c43babffb39e27ff45def/h264_800k_mp4.mp4" );
-            bean.setVedio_img("http://upload.jxntv.cn/jxwlgbdst/upload/Image/default/2016/12/08/" +
-                    "3e54ee410d3c43babffb39e27ff45def/1_640_400.jpg");
-            GetVedioAPI.addVedioBean(bean,this);
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                   // GetNewsForSearch.getAllNews("美女",1);
+                }
+            }.start();
             return true;
         }
 
@@ -194,15 +215,34 @@ public class ShowNewsActivity extends AppCompatActivity
                 //Toast.makeText(this, "menu_videos", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_musics:
-                setVisible(0);
+                setVisible(3);
+                getMusicList();
+                mToolbar.setTitle("音乐轻听");
                 // Toast.makeText(this, "menu_musics", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_search:
-                setVisible(0);
+                Intent intent=new Intent(this,SearchAllNewsActivity.class);
+                startActivity(intent);
                 //Toast.makeText(this, "menu_search", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_mode:
-                setVisible(0);
+                isDay=getSharedPreferences("day_night_mode",MODE_PRIVATE)
+                        .getBoolean("mode",true);
+                isDay=!isDay;
+                ad = getDelegate();
+                if (isDay){
+//                    item.setIcon(R.mipmap.menu_theme_day);
+//                    item.setTitle("日间模式");
+                    ad.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }else {
+//                    item.setIcon(R.mipmap.menu_theme_night);
+//                    item.setTitle("夜间模式");
+                    ad.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                     recreate();
+                }
+
+                editor.putBoolean("mode",isDay);
+                editor.commit();
                 // Toast.makeText(this, "menu_mode", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_feedback:
@@ -288,6 +328,9 @@ public class ShowNewsActivity extends AppCompatActivity
         musciView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setVisible(3);
+                getMusicList();
+                mToolbar.setTitle("音乐轻听");
                 // Toast.makeText(ShowNewsActivity.this, "4", Toast.LENGTH_SHORT).show();
                 floatingActionMenu.collapse();
             }
@@ -295,6 +338,31 @@ public class ShowNewsActivity extends AppCompatActivity
 
     }
 
+
+    /**
+     * 获取数据音乐列表
+     */
+    public void getMusicList() {
+        fragments.clear();
+        /**
+         * 动态初始化fragmnet,并且从activity传值给对应的fragment
+         */
+        for (int j = 0; j < Constant.TAB_MUSIC.length; j++) {
+            MusicFragment fragment = new MusicFragment();
+            fragments.add(fragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("type", Constant.TAB_MUSIC[j]);
+            fragment.setArguments(bundle);
+        }
+        adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
+        musicViewpage.setAdapter(adapter);
+        musicViewpage.setCurrentItem(0);//默认显示第一页
+        musicTabLyout.setupWithViewPager(musicViewpage);//用的是tablayout，关联viewpage
+        //为tablayout添加tab
+        for (int i = 0; i < Constant.TAB_MUSIC.length; i++) {
+            musicTabLyout.getTabAt(i).setText(Constant.TAB_MUSIC[i]);
+        }
+    }
 
     /**
      * 获取视频数据列表
@@ -357,7 +425,17 @@ public class ShowNewsActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-
+            case  R.id.download:
+                ToastUtil.MyToast(this,"download");
+                break;
+            case  R.id.usernameImg:
+                ToastUtil.MyToast(this,"usernameImg");
+                break;
+            case  R.id.my_favorites:
+              //  ToastUtil.MyToast(this,"my_favorites");
+                Intent intent=new Intent(this,MyCollectNewsActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 

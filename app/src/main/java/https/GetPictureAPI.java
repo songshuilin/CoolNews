@@ -39,6 +39,8 @@ public class GetPictureAPI {
                 PictureBean pictureBean = new PictureBean(Parcel.obtain());
                 String imgUrl = meinvs.get(i).getElementsByTag("img").attr("lazysrc");//图片url
                 String imgTitle = meinvs.get(i).getElementsByTag("p").text();//图片描述
+                String htmlUrl=meinvs.get(i).getElementsByTag("a").attr("href");
+                pictureBean.setUrl(htmlUrl);
                 pictureBean.setPictureTitle(imgTitle);
                 pictureBean.setPictureUrl(imgUrl);
                 list.add(pictureBean);
@@ -53,6 +55,36 @@ public class GetPictureAPI {
         return list;
     }
 
+
+    public static List<PictureBean> getPictureNextList(String nextUrl) {
+        List<PictureBean> list = null;
+        try {
+            Document document = Jsoup.connect(nextUrl).get();
+            String str=document.toString();
+            Elements meinv = document.getElementsByClass("listUll");
+            Elements meinvs = meinv.get(1).getElementsByClass("libox");
+
+            if (meinvs != null) {
+                list = new ArrayList<>();
+            }
+
+            for (int i = 0; i < meinvs.size(); i++) {
+                PictureBean pictureBean = new PictureBean(Parcel.obtain());
+                String imgUrl = meinvs.get(i).getElementsByTag("img").attr("lazysrc");//图片url
+                String imgTitle = meinvs.get(i).getElementsByTag("p").text();//图片描述
+                pictureBean.setPictureTitle(imgTitle);
+                pictureBean.setPictureUrl(imgUrl);
+                list.add(pictureBean);
+            }
+
+            return list;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
     public static String getUrlForType(String type) {
         switch (type) {

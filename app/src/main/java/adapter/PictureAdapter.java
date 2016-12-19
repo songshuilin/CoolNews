@@ -59,10 +59,10 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.MyHodler
         this.list = list;
         this.context = context;
         //随机高度集合
-        mheight=new ArrayList<Integer>();
-        for(int i=0;i<list.size();i++){
-            mheight.add((int)(250+Math.random()*400));
-        }
+//        mheight=new ArrayList<Integer>();
+//            for(int i=0;i<list.size();i++){
+//                mheight.add((int)(250+Math.random()*400));
+//        }
     }
 
     @Override
@@ -76,7 +76,8 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.MyHodler
     @Override
     public void onBindViewHolder(MyHodler holder, int position) {
         ViewGroup.LayoutParams lp = holder.draweeView.getLayoutParams();
-        lp.height = mheight.get(position);
+
+        lp.height =(int)(250+Math.random()*400);
         holder.draweeView.setLayoutParams(lp);
 
         Uri uri = Uri.parse(list.get(position).getPictureUrl());

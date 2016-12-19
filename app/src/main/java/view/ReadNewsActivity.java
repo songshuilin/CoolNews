@@ -1,12 +1,14 @@
 package view;
 
 import android.app.ProgressDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,12 +17,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.edu.coolnews.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+import db.CollectNewsHelp;
+import db.dao.CollectNewsDao;
+import model.CollectNewsBean;
 
 public class ReadNewsActivity extends AppCompatActivity implements View.OnClickListener {
     private WebView webView;
@@ -31,8 +37,9 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
     private CollapsingToolbarLayout mCollLayout;
     private Toolbar mToolbar;
     private SimpleDraweeView mImg;
-    private ImageView backImg, rightImg;
-
+    private ImageView backImg, rightImg,collectImg;
+    private SQLiteDatabase db;
+    private CollectNewsHelp help;
     /**
      * 初始化控件
      */
@@ -46,6 +53,8 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
         rightImg = (ImageView) findViewById(R.id.right_img);
         backImg.setOnClickListener(this);
         rightImg.setOnClickListener(this);
+        collectImg= (ImageView) findViewById(R.id.collect_img);
+        collectImg.setOnClickListener(this);
     }
 
     @Override
@@ -57,9 +66,16 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
         imgUrl = getIntent().getStringExtra("imgurl");
         initViews();
         showWebview();
-        mCollLayout.setTitle(title);
-        Uri uri = Uri.parse(imgUrl);
-        mImg.setImageURI(uri);
+         help=new CollectNewsHelp(this,"collect.db",null,1);
+         db=help.getReadableDatabase();
+        mCollLayout.setTitle(Html.fromHtml(title));
+        if (imgUrl!=null){
+            Uri uri = Uri.parse(imgUrl);
+            mImg.setImageURI(uri);
+        }else {
+            mImg.setImageURI("");
+        }
+
     }
 
     /**
@@ -157,6 +173,11 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.right_img:
                 showShare();
                 break;
+            case R.id.collect_img:
+               // finish();
+                CollectNewsDao.insertCollectNews(db,new CollectNewsBean(url,imgUrl,title));
+                Toast.makeText(ReadNewsActivity.this,"收藏成功...",Toast.LENGTH_SHORT).show();
+            break;
         }
     }
 

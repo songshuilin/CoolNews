@@ -17,5 +17,6 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:gravity="center"
+        android:textColor="#737373"
         android:text="新闻"/>
 </LinearLayout>

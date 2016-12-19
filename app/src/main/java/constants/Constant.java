@@ -32,7 +32,7 @@ public interface Constant {
     };
 
     //图片
-    String PICTURE_URL_STAR = "http://www.27270.com/ent/mingxingtuku/list_10_1.html";//明星
+    String PICTURE_URL_STAR = "http://www.27270.com/ent/mingxingtuku/list_10_3.html";//明星
     String PICTURE_URL_CAR = "http://www.27270.com/beautiful/qichetuku/list_15_1.html";//汽车
     String PICTURE_URL_ANIMAL = "http://www.27270.com/word/dongwushijie/list_8_1.html";//动物
     String PICTURE_URL_FUN = "http://www.27270.com/word/gaoxiaoqutu/list_7_1.html";//搞笑
@@ -60,4 +60,28 @@ public interface Constant {
     String   VEDIO_UNLINE="离线视频";
 
     String TAB_VEDIO[]={VEDIO_ONLINE,VEDIO_UNLINE};
+
+
+    /**
+     * 音乐
+     */
+
+    String  MUSIC_ONLINE="在线音乐";
+    String   MUSIC_UNLINE="离线音乐";
+
+    String TAB_MUSIC[]={MUSIC_ONLINE,MUSIC_UNLINE};
+
+    /**
+     * 新闻的搜索
+     */
+    String SEARCH_NEWS="http://news.baidu.com/ns?cl=2&rn=20&tn=news&word=美女";
+
+
+    /**
+     * 表名
+     */
+
+    String SEARCH_HISTORY_TABLE="SEARCH_HISTORY_TABLE";
+
+    String COLLECT_NEWS_TABLE="COLLECT_NEWS_TABLE";
 }

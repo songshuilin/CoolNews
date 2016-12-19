@@ -45,7 +45,6 @@ public class PlayVedioActivity extends AppCompatActivity implements MediaPlayer.
         window.setFlags(flag, flag);
         getSupportActionBar().hide();
 
-        Vitamio.isInitialized(this);
         //设置视频解码监听
         if (!LibsChecker.checkVitamioLibs(this)) {
             return;
