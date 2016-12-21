@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <LinearLayout
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      android:background="?attr/colorPrimary"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:orientation="horizontal"
+      >
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/back_img"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_arrow_back_white_48dp"
+            />
+      <TextView
+          android:textSize="26sp"
+          android:gravity="center"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:text="意见反馈"
+          android:paddingRight="5dp"
+          />
+
+      <TextView
+          android:id="@+id/send"
+          android:textSize="26sp"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:text="发送"
+          android:paddingRight="10dp"
+          />
+  </LinearLayout>
+
+    <EditText
+        android:id="@+id/content"
+        android:gravity="top|left"
+        android:hint="必填，详细反馈"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="5"
+        />
+
+    <EditText
+        android:paddingLeft="5dp"
+        android:id="@+id/contact_ways"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="QQ,微信，邮件，或电话"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:textSize="12sp"
+        android:textColor="#737373"
+        android:text="您的联系方式有助于我们沟通和解决问题"
+        />
+
+</LinearLayout>

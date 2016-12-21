@@ -24,8 +24,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.example.edu.coolnews.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import adapter.NewsAdapter;
 import adapter.SearchHistoryNewsAdapter;
@@ -39,7 +43,9 @@ import util.DividerItemDecoration;
 /**
  *
  */
-public class SearchAllNewsActivity extends AppCompatActivity implements View.OnClickListener {
+public class SearchAllNewsActivity extends AppCompatActivity implements View.OnClickListener
+, OnLoadMoreListener
+{
 
     private RecyclerView mRecyclerView;
     private RecyclerView mHistoryRecyclerView;
@@ -55,17 +61,25 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
     private ImageView backImg;
     private LinearLayout mLl;
     private TextView delete_all;
+    private  LinearLayout hint;
+    private SwipeToLoadLayout swipeToLoadLayout;
+    private int count = 1;
+     private String loadkey;
 
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
+                switch (msg.what) {
+                case 0x12345:
+                    adapter.notifyDataSetChanged();
+                    swipeToLoadLayout.setLoadingMore(false);
+                    break;
                 case 0x123:
                     LinearLayoutManager layoutManager = new LinearLayoutManager(SearchAllNewsActivity.this);
                     mLl.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+                    hint.setVisibility(View.VISIBLE);
                     mRecyclerView.setLayoutManager(layoutManager);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     adapter = new NewsAdapter(list, SearchAllNewsActivity.this);
@@ -88,7 +102,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
 
                 case 0x1234:
                     LinearLayoutManager historyLayoutManager = new LinearLayoutManager(SearchAllNewsActivity.this);
-                    mRecyclerView.setVisibility(View.GONE);//看新闻的recycler隐藏
+                    hint.setVisibility(View.GONE);//看新闻的recycler隐藏
                     mLl.setVisibility(View.VISIBLE);
                     mHistoryRecyclerView.setLayoutManager(historyLayoutManager);
                     mHistoryRecyclerView.addItemDecoration(new DividerItemDecoration(SearchAllNewsActivity.this
@@ -96,14 +110,16 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
                     searchAdapter = new SearchHistoryNewsAdapter(historyBeanList, SearchAllNewsActivity.this);
                     mHistoryRecyclerView.setAdapter(searchAdapter);
                     searchAdapter.setListener(new SearchHistoryNewsAdapter.OnClickTextViewListener() {
+
                         @Override
                         public void OnClickTextView(View view, SearchHistoryBean bean) {
+                            loadkey=bean.getKey();
                            // Toast.makeText(SearchAllNewsActivity.this, bean.toString(), Toast.LENGTH_SHORT).show();
-                            autoCompleteTextView.setText(bean.getKey());
-                            searchHistory(bean.getKey());
+                            autoCompleteTextView.setText(loadkey);
+                            searchHistory(loadkey);
                             SearchNewsHistoryDao.insertSearchNews(db,bean);
                             for (SearchHistoryBean history : historyBeanList) {
-                                if (bean.getKey().equals(history.getKey())){
+                                if (loadkey.equals(history.getKey())){
                                     historyBeanList.remove(history);
                                     break;
                                 }
@@ -126,6 +142,11 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
 
                         }
                     });
+                    if (historyBeanList.size()==0){
+                        delete_all.setVisibility(View.GONE);
+                    }else {
+                        delete_all.setVisibility(View.VISIBLE);
+                    }
                     break;
 
             }
@@ -140,12 +161,15 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
         db = serarchHelp.getReadableDatabase();
         initView();
         getSupportActionBar().hide();
-        //  mRecyclerView.setVisibility(View.GONE);
+         hint.setVisibility(View.GONE);
         query();
     }
 
     private void initView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
+        hint= (LinearLayout) findViewById(R.id.hint);
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.searech_text);
         mLl= (LinearLayout) findViewById(R.id.ll);
         backImg = (ImageView) findViewById(R.id.back_img);
@@ -155,7 +179,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                mRecyclerView.setVisibility(View.GONE);
+                hint.setVisibility(View.GONE);
                 mLl.setVisibility(View.VISIBLE);
                 searchAdapter.notifyDataSetChanged();
                 if (historyBeanList.size()==0){
@@ -218,6 +242,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.search:
                 key = autoCompleteTextView.getText().toString();
+                loadkey=key;
                 if (TextUtils.isEmpty(key)) {
                     Toast.makeText(SearchAllNewsActivity.this, "搜索不能为空！", Toast.LENGTH_SHORT).show();
                     return;
@@ -250,6 +275,30 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
             }
         }.start();
 
+    }
+
+    /**
+     * 上拉加载
+     */
+    @Override
+    public void onLoadMore() {
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                // mAdapter.add("LOAD MORE:\n" + new Date());
+                count++;
+                new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        List<NewsBean.NewslistBean> loadList = GetNewsForSearch.getAllNews(loadkey, count);
+                        list.addAll(loadList);
+                        handler.sendEmptyMessage(0x12345);
+                    }
+                }.start();
+
+            }
+        });
     }
 
 }

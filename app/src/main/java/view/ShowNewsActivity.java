@@ -2,9 +2,8 @@ package view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -22,14 +21,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edu.coolnews.R;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.FragmentAdapter;
+import cn.bmob.v3.BmobUser;
 import constants.Constant;
 import custom.FloatingActionMenu;
 import fragment.MusicFragment;
@@ -39,6 +41,7 @@ import fragment.VedioFragment;
 import https.GetMusicAPI;
 import https.GetNewsForSearch;
 import https.GetVedioAPI;
+import model.UserBean;
 import model.VedioBean;
 import util.ToastUtil;
 
@@ -64,18 +67,19 @@ public class ShowNewsActivity extends AppCompatActivity
     private LinearLayout newsLinner;
     private FloatingActionMenu floatingActionMenu;
     private SharedPreferences.Editor editor;
-    private boolean isDay=true;
+    private boolean isDay = true;
     private AppCompatDelegate ad;
     private View handView;
-   private ImageView userImg;
+    private SimpleDraweeView userImg;
     private LinearLayout my_favorites;
     private LinearLayout download;
-
-
+    private UserBean curUser;
+    private TextView username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
+        curUser= BmobUser.getCurrentUser(UserBean.class);
         initView();//初始化各控件
         initData();
         setSupportActionBar(mToolbar);
@@ -84,10 +88,13 @@ public class ShowNewsActivity extends AppCompatActivity
         mDl.setDrawerListener(toggle);
         toggle.syncState();
         getNewsList();
-        editor=getSharedPreferences("day_night_mode",MODE_PRIVATE).edit();
+        editor = getSharedPreferences("day_night_mode", MODE_PRIVATE).edit();
     }
 
     private void initData() {
+        username.setText(curUser.getUsername());
+        userImg.setImageURI(Uri.parse(curUser.getImage().getFileUrl()));
+        Log.i("TAGss", "initData: "+Uri.parse(curUser.getImage().getFileUrl()));
         for (int i = 0; i < Constant.TABS.length; i++) {
             mTabText.add(Constant.TABS[i]);
         }
@@ -97,6 +104,7 @@ public class ShowNewsActivity extends AppCompatActivity
      * 初始化各控件
      */
     private void initView() {
+
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_actions_menu);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mDl = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,10 +118,11 @@ public class ShowNewsActivity extends AppCompatActivity
         vedioViewpage = (ViewPager) findViewById(R.id.vedio_viewpager);
         musicViewpage = (ViewPager) findViewById(R.id.music_viewpager);
         newsLinner = (LinearLayout) findViewById(R.id.content_show_news);
-        handView=mNv.getHeaderView(0);
-        download= (LinearLayout) handView.findViewById(R.id.download);
-        my_favorites= (LinearLayout) handView.findViewById(R.id.my_favorites);
-        userImg= (ImageView) handView.findViewById(R.id.usernameImg);
+        handView = mNv.getHeaderView(0);
+        username= (TextView) handView.findViewById(R.id.username);
+        download = (LinearLayout) handView.findViewById(R.id.download);
+        my_favorites = (LinearLayout) handView.findViewById(R.id.my_favorites);
+        userImg = (SimpleDraweeView) handView.findViewById(R.id.usernameImg);
         my_favorites.setOnClickListener(this);
         download.setOnClickListener(this);
         userImg.setOnClickListener(this);
@@ -163,7 +172,7 @@ public class ShowNewsActivity extends AppCompatActivity
     }
 
     /**
-     *选项菜单点击事件
+     * 选项菜单点击事件
      *
      * @param item
      * @return
@@ -172,11 +181,11 @@ public class ShowNewsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     super.run();
-                   // GetNewsForSearch.getAllNews("美女",1);
+                    // GetNewsForSearch.getAllNews("美女",1);
                 }
             }.start();
             return true;
@@ -221,36 +230,38 @@ public class ShowNewsActivity extends AppCompatActivity
                 // Toast.makeText(this, "menu_musics", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_search:
-                Intent intent=new Intent(this,SearchAllNewsActivity.class);
+                Intent intent = new Intent(this, SearchAllNewsActivity.class);
                 startActivity(intent);
                 //Toast.makeText(this, "menu_search", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_mode:
-                isDay=getSharedPreferences("day_night_mode",MODE_PRIVATE)
-                        .getBoolean("mode",true);
-                isDay=!isDay;
+                isDay = getSharedPreferences("day_night_mode", MODE_PRIVATE)
+                        .getBoolean("mode", true);
+                isDay = !isDay;
                 ad = getDelegate();
-                if (isDay){
+                if (isDay) {
 //                    item.setIcon(R.mipmap.menu_theme_day);
 //                    item.setTitle("日间模式");
                     ad.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }else {
+                } else {
 //                    item.setIcon(R.mipmap.menu_theme_night);
 //                    item.setTitle("夜间模式");
                     ad.setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                     recreate();
+                    recreate();
                 }
 
-                editor.putBoolean("mode",isDay);
+                editor.putBoolean("mode", isDay);
                 editor.commit();
                 // Toast.makeText(this, "menu_mode", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_feedback:
-                setVisible(0);
+                Intent intent1 = new Intent(this, FeedBackActivity.class);
+                startActivity(intent1);
                 // Toast.makeText(this, "menu_feedback", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.menu_set:
-                setVisible(0);
+                Intent intent2 = new Intent(this, SettingActivity.class);
+                startActivity(intent2);
                 // Toast.makeText(this, "menu_set", Toast.LENGTH_SHORT).show();
                 break;
 
@@ -425,15 +436,15 @@ public class ShowNewsActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case  R.id.download:
-                ToastUtil.MyToast(this,"download");
+            case R.id.download:
+                ToastUtil.MyToast(this, "download");
                 break;
-            case  R.id.usernameImg:
-                ToastUtil.MyToast(this,"usernameImg");
+            case R.id.usernameImg:
+                ToastUtil.MyToast(this, "usernameImg");
                 break;
-            case  R.id.my_favorites:
-              //  ToastUtil.MyToast(this,"my_favorites");
-                Intent intent=new Intent(this,MyCollectNewsActivity.class);
+            case R.id.my_favorites:
+                //  ToastUtil.MyToast(this,"my_favorites");
+                Intent intent = new Intent(this, MyCollectNewsActivity.class);
                 startActivity(intent);
                 break;
         }

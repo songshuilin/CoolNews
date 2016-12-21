@@ -57,7 +57,7 @@ public interface Constant {
      String VEDIO_URL="http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1#";
 
     String  VEDIO_ONLINE="在线视频";
-    String   VEDIO_UNLINE="离线视频";
+    String   VEDIO_UNLINE="本地视频";
 
     String TAB_VEDIO[]={VEDIO_ONLINE,VEDIO_UNLINE};
 
@@ -67,7 +67,7 @@ public interface Constant {
      */
 
     String  MUSIC_ONLINE="在线音乐";
-    String   MUSIC_UNLINE="离线音乐";
+    String   MUSIC_UNLINE="本地音乐";
 
     String TAB_MUSIC[]={MUSIC_ONLINE,MUSIC_UNLINE};
 

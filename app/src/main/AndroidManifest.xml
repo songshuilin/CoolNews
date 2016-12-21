@@ -36,11 +36,7 @@
         <activity
             android:name="view.ShowNewsActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!--播放视屏-->
@@ -48,11 +44,27 @@
             android:name="view.PlayVedioActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensorLandscape"></activity>
-
+        <!--设置页面-->
+        <activity android:name="view.SettingActivity" />
+        <!--个人设置-->
+        <activity android:name="view.SettingUpadeUserActivity"/>
         <!--收藏界面-->
         <activity android:name="view.MyCollectNewsActivity">
+        </activity>
+        <!--注册界面-->
+        <activity android:name="view.RegistActivity"/>
+        <!--登录界面-->
+        <activity android:name="view.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
+        <!--我的反馈-->
+        <activity android:name="view.FeedBackActivity" />
+
         <!--阅读新闻-->
         <activity
             android:name="view.ReadNewsActivity"
