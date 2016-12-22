@@ -27,9 +27,12 @@ import java.util.List;
 
 import adapter.NewsAdapter;
 import adapter.SearchHistoryNewsAdapter;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 import db.SearchNewsHistoryHelp;
 import db.dao.SearchNewsHistoryDao;
 import https.GetNewsForSearch;
+import model.FeedBackBean;
 import model.NewsBean;
 import model.SearchHistoryBean;
 import util.DividerItemDecoration;
@@ -74,7 +77,27 @@ public class FeedBackActivity extends AppCompatActivity implements View.OnClickL
 
                 break;
             case R.id.send:
-                ToastUtil.MyToast(this, "send");
+                String content=mEtContent.getText().toString();
+                String contact=mContact_ways.getText().toString();
+                if (TextUtils.isEmpty(contact)||TextUtils.isEmpty(content)){
+                    ToastUtil.MyToast(FeedBackActivity.this,"输入有空，请检查。");
+                }
+                FeedBackBean feedBack = new FeedBackBean();
+                feedBack.setContactWays(contact);
+                feedBack.setFeedBack_content(content);
+                //注意：不能调用gameScore.setObjectId("")方法
+                feedBack.save(new SaveListener<String>() {
+                    @Override
+                    public void done(String objectId, BmobException e) {
+                        if (e == null) {
+                            ToastUtil.MyToast(FeedBackActivity.this, "反馈成功");
+                            finish();
+                        } else {
+                            ToastUtil.MyToast(FeedBackActivity.this, "反馈失败：" + e.getMessage() + "," + e.getErrorCode());
+                        }
+                    }
+                });
+
                 break;
         }
     }
