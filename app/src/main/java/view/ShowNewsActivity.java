@@ -27,6 +27,9 @@ import android.widget.Toast;
 import com.example.edu.coolnews.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,7 @@ import adapter.FragmentAdapter;
 import cn.bmob.v3.BmobUser;
 import constants.Constant;
 import custom.FloatingActionMenu;
+import event.FinishEvent;
 import fragment.MusicFragment;
 import fragment.PictureFragment;
 import fragment.NewsFragment;
@@ -79,6 +83,7 @@ public class ShowNewsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
+        EventBus.getDefault().register(this);
         curUser= BmobUser.getCurrentUser(UserBean.class);
         initView();//初始化各控件
         initData();
@@ -450,5 +455,13 @@ public class ShowNewsActivity extends AppCompatActivity
         }
     }
 
-
+    @Subscribe
+    public void finish(FinishEvent event){
+        finish();
+    }
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 }

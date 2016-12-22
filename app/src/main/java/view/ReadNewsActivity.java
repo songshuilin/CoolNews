@@ -22,11 +22,14 @@ import android.widget.Toast;
 import com.example.edu.coolnews.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobUser;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import db.CollectNewsHelp;
 import db.dao.CollectNewsDao;
 import model.CollectNewsBean;
+import model.UserBean;
 
 public class ReadNewsActivity extends AppCompatActivity implements View.OnClickListener {
     private WebView webView;
@@ -40,6 +43,7 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
     private ImageView backImg, rightImg,collectImg;
     private SQLiteDatabase db;
     private CollectNewsHelp help;
+    private UserBean bean;
     /**
      * 初始化控件
      */
@@ -175,7 +179,9 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.collect_img:
                // finish();
-                CollectNewsDao.insertCollectNews(db,new CollectNewsBean(url,imgUrl,title));
+                CollectNewsDao.insertCollectNews(db,new CollectNewsBean(
+                    BmobUser.getCurrentUser(UserBean.class).getUsername(),
+                    url,imgUrl,title));
                 Toast.makeText(ReadNewsActivity.this,"收藏成功...",Toast.LENGTH_SHORT).show();
             break;
         }

@@ -27,6 +27,7 @@ import java.util.List;
 
 import adapter.CollectNewsAdapter;
 import adapter.NewsAdapter;
+import cn.bmob.v3.BmobUser;
 import db.CollectNewsHelp;
 import db.dao.CollectNewsDao;
 import io.vov.vitamio.LibsChecker;
@@ -35,6 +36,7 @@ import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import model.CollectNewsBean;
 import model.NewsBean;
+import model.UserBean;
 import util.CustomMediaController;
 import util.DividerItemDecoration;
 import util.ToastUtil;
@@ -50,7 +52,7 @@ public class MyCollectNewsActivity extends AppCompatActivity implements View.OnC
     private CollectNewsAdapter adapter;
     private ImageView back_img;
     private ItemTouchHelper itemTouchHelper;
-
+    private UserBean bean;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,6 +85,7 @@ public class MyCollectNewsActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collect_news);
         getSupportActionBar().hide();
+        bean= BmobUser.getCurrentUser(UserBean.class);
         initView();
         help = new CollectNewsHelp(this, "collect.db", null, 1);
         db = help.getReadableDatabase();

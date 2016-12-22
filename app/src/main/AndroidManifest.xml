@@ -51,6 +51,9 @@
         <!--收藏界面-->
         <activity android:name="view.MyCollectNewsActivity">
         </activity>
+        <!--关于我-->
+        <activity android:name="view.AboutActivity"/>
+        <activity android:name="view.AboutMeDetailActivity"/>
         <!--注册界面-->
         <activity android:name="view.RegistActivity"/>
         <!--登录界面-->

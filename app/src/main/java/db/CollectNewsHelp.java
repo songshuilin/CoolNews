@@ -15,7 +15,7 @@ public class CollectNewsHelp extends SQLiteOpenHelper {
     //建表语句
     private String sql = "create table " + Constant.COLLECT_NEWS_TABLE
             + " ( id integer primary key autoincrement ," +
-            " title ,imgurl,url ) ";
+            " username ,title ,imgurl,url ) ";
 
     public CollectNewsHelp(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

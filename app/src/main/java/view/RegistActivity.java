@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.edu.coolnews.R;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,7 +42,7 @@ import util.ToastUtil;
 public class RegistActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText usernaem, password, email;
     private Button regist;
-    private ImageView choiseImg;
+    private SimpleDraweeView choiseImg;
     private ImageView back_img;
     private Bitmap head;// 头像Bitmap
     private static String path = "/sdcard/myHead/";// sd路径
@@ -63,7 +64,7 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
         password = (EditText) findViewById(R.id.password);
         usernaem = (EditText) findViewById(R.id.username);
         back_img = (ImageView) findViewById(R.id.back_img);
-        choiseImg = (ImageView) findViewById(R.id.img);
+        choiseImg = (SimpleDraweeView) findViewById(R.id.img);
         back_img.setOnClickListener(this);
         choiseImg.setOnClickListener(this);
     }

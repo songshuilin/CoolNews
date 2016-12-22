@@ -1,6 +1,8 @@
 package view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,27 +10,34 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.edu.coolnews.R;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
+import db.CollectNewsHelp;
+import db.dao.CollectNewsDao;
 import model.UserBean;
 import util.ToastUtil;
 
@@ -36,33 +45,90 @@ import util.ToastUtil;
  * 注册
  */
 public class SettingUpadeUserActivity extends AppCompatActivity implements View.OnClickListener {
-    private EditText usernaem, password, email;
+    private EditText usernaem, email;
     private Button update;
-    private ImageView choiseImg;
+    private SimpleDraweeView choiseImg;
     private ImageView back_img;
     private Bitmap head;// 头像Bitmap
     private static String path = "/sdcard/myHead/";// sd路径
     private String fileName;
     private BmobFile bmobFile;
-
+    private UserBean userBean;
+    private Button updatePassword;
+    private AlertDialog.Builder builder;
+    private View update_password_view;
+    private EditText old_password, new_password, ok_password;
+    private CollectNewsHelp help;
+    private SQLiteDatabase db;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_update_user);
+        userBean = BmobUser.getCurrentUser(UserBean.class);
         getSupportActionBar().hide();
         initView();
+        help = new CollectNewsHelp(this, "collect.db", null, 1);
+        db = help.getReadableDatabase();
     }
 
     private void initView() {
+
+        builder = new AlertDialog.Builder(this);
+        builder.setIcon(R.mipmap.ic_launcher);
+        builder.setTitle("修改密码");
+        update_password_view = LayoutInflater.from(this).inflate(R.layout.update_password, null);
+        old_password = (EditText) update_password_view.findViewById(R.id.old_password);
+        new_password = (EditText) update_password_view.findViewById(R.id.new_password);
+        ok_password = (EditText) update_password_view.findViewById(R.id.ok_password);
+        builder.setView(update_password_view);
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (TextUtils.isEmpty(ok_password.getText().toString()) || TextUtils.isEmpty(new_password.getText().toString())) {
+                    ToastUtil.MyToast(SettingUpadeUserActivity.this, "你输入有为空，请检查");
+                    return;
+                }
+
+                if (!(new_password.getText().toString().equals(ok_password.getText().toString()))) {
+                    ToastUtil.MyToast(SettingUpadeUserActivity.this, "新密码跟确认密码不一样！");
+                    return;
+                }
+                BmobUser.updateCurrentUserPassword(old_password.getText().toString(), new_password.getText().toString(),
+                        new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    ToastUtil.MyToast(SettingUpadeUserActivity.this, "密码修改成功，可以用新密码进行登录啦");
+                                    Intent intent = new Intent(SettingUpadeUserActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    BmobUser.logOut();
+                                    finish();
+                                } else {
+                                    ToastUtil.MyToast(SettingUpadeUserActivity.this, "失败:" + e.getMessage());
+                                }
+                            }
+
+                        });
+                dialog.dismiss();
+            }
+        });
+
+
+        builder.setNegativeButton("取消", null);
+        updatePassword = (Button) findViewById(R.id.updatepassword);
+        updatePassword.setOnClickListener(this);
         update = (Button) findViewById(R.id.update);
         update.setOnClickListener(this);
         email = (EditText) findViewById(R.id.email);
-        password = (EditText) findViewById(R.id.password);
         usernaem = (EditText) findViewById(R.id.username);
         back_img = (ImageView) findViewById(R.id.back_img);
-        choiseImg = (ImageView) findViewById(R.id.img);
+        choiseImg = (SimpleDraweeView) findViewById(R.id.img);
+        usernaem.setText(userBean.getUsername());
+        email.setText(userBean.getEmail());
+        choiseImg.setImageURI(Uri.parse(userBean.getImage().getFileUrl()));
         back_img.setOnClickListener(this);
         choiseImg.setOnClickListener(this);
+
     }
 
 
@@ -73,7 +139,16 @@ public class SettingUpadeUserActivity extends AppCompatActivity implements View.
      */
     @Override
     public void onClick(View v) {
+        //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
+        ViewGroup parent = (ViewGroup) update_password_view.getParent();
+        if (parent != null) {
+            parent.removeView(update_password_view);
+        }
+
         switch (v.getId()) {
+            case R.id.updatepassword:
+                builder.show();
+                break;
             case R.id.back_img:
                 finish();
                 break;
@@ -85,27 +160,30 @@ public class SettingUpadeUserActivity extends AppCompatActivity implements View.
                 startActivityForResult(intent, 1);
                 break;
             case R.id.update:
-
-                String name = usernaem.getText().toString();
-                String userpassword = password.getText().toString();
+                final String name = usernaem.getText().toString();
                 String useremail = email.getText().toString();
-                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(userpassword) || TextUtils.isEmpty(useremail)) {
+                if (TextUtils.isEmpty(name) || TextUtils.isEmpty(useremail)) {
                     ToastUtil.MyToast(SettingUpadeUserActivity.this, "你输入有为空，请检查");
                     return;
                 }
                 UserBean newUser = new UserBean();
-                newUser.setPassword(userpassword);
                 newUser.setUsername(name);
                 newUser.setEmail(useremail);
                 newUser.setImage(bmobFile);
                 UserBean bmobUser = UserBean.getCurrentUser(UserBean.class);
-                newUser.update(bmobUser.getObjectId(),new UpdateListener() {
+                newUser.update(bmobUser.getObjectId(), new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
-                        if(e==null){
-                            ToastUtil.MyToast(SettingUpadeUserActivity.this,"更新用户信息成功");
-                        }else{
-                            ToastUtil.MyToast(SettingUpadeUserActivity.this,"更新用户信息失败:" + e.getMessage());
+                        if (e == null) {
+                            ToastUtil.MyToast(SettingUpadeUserActivity.this, "更新用户信息成功");
+                            BmobUser.getCurrentUser().setUsername(name);
+                            CollectNewsDao.updateUsername(db,userBean.getUsername(),name);
+                            Intent intent = new Intent(SettingUpadeUserActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            BmobUser.logOut();
+                            finish();
+                        } else {
+                            ToastUtil.MyToast(SettingUpadeUserActivity.this, "更新用户信息失败:" + e.getMessage());
                         }
                     }
                 });

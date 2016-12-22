@@ -5,14 +5,24 @@ package model;
  */
 
 public class CollectNewsBean {
+    private String username;
     private String url;
     private String imgUrl;
     private String title;
 
-    public CollectNewsBean(String url, String imgUrl, String title) {
+    public CollectNewsBean(String username,String url, String imgUrl, String title) {
         this.url = url;
         this.imgUrl = imgUrl;
         this.title = title;
+        this.username=username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getUrl() {
@@ -42,7 +52,8 @@ public class CollectNewsBean {
     @Override
     public String toString() {
         return "CollectNewsBean{" +
-                "url='" + url + '\'' +
+                "username='" + username + '\'' +
+                ", url='" + url + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", title='" + title + '\'' +
                 '}';

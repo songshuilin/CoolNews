@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,28 +53,6 @@
     </LinearLayout>
 
 
-
-    <LinearLayout
-        android:padding="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="密  码"
-            />
-        <EditText
-            android:inputType="textPassword"
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="请输入密码..."
-            />
-    </LinearLayout>
-
-
     <LinearLayout
         android:padding="10dp"
         android:layout_width="match_parent"
@@ -105,13 +84,14 @@
             android:layout_height="50dp"
             android:text="头  像"
             />
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/img"
             android:layout_alignParentRight="true"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:paddingRight="10dp"
-            android:src="@mipmap/ic_launcher"
+            fresco:actualImageScaleType="centerInside"
+            fresco:placeholderImage="@mipmap/ic_launcher"
             />
     </RelativeLayout>
 
@@ -121,5 +101,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/update"
+        />
+    <Button
+        android:text="修改密码"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/updatepassword"
         />
 </LinearLayout>
