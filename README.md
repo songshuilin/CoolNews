@@ -5,7 +5,7 @@
 
   至今项目还在开发中
   
- 所用的框架有：libzxing（二维码相关）+ okhttp3(网络请求) + gson(解析json) + jsoup（解析html）+ vitamio (音视频框架) + fresco（图片加载框架） + animated-gif（加载gif图片）+ eventbus（组件之间通信） + SwipeToLoadLayout（上拉加载跟下拉刷新）+ recyclerview （替代listview）+ cardview + design（主要是md控件）+ bmob（服务器）
+ 目前所用的有：libzxing（二维码相关）+ okhttp3(网络请求) + gson(解析json) + jsoup（解析html）+ vitamio (音视频框架) + fresco（图片加载框架） + animated-gif（加载gif图片）+ eventbus（组件之间通信） + SwipeToLoadLayout（上拉加载跟下拉刷新）+ recyclerview （替代listview）+ cardview + design（主要是md控件）+ bmob（服务器）
  
   新闻简读：已完成
   
