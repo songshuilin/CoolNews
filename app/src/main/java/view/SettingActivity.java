@@ -1,10 +1,12 @@
 package view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -18,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import cn.bmob.v3.BmobUser;
 import event.FinishEvent;
+import util.DataCleanManager;
 import util.ToastUtil;
 
 /**
@@ -29,6 +32,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView back_img;
     private TextView chche_size, version;
     private TextView back_user;
+    private AlertDialog.Builder build;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,9 +41,38 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().hide();
         initView();
         getVersionCode();
+        initData();
+    }
+
+    /**
+     * 初始化数据
+     */
+    private void initData() {
+        try {
+            String size=  DataCleanManager.getTotalCacheSize(SettingActivity.this);
+            if (size==null){
+                chche_size.setText(0+"B");
+            }else {
+                chche_size.setText(size);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
+        build=new AlertDialog.Builder(this);
+        build.setTitle("提示");
+        build.setMessage("确定要删除所有缓存吗？");
+        build.setNegativeButton("取消",null);
+        build.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DataCleanManager.clearAllCache(SettingActivity.this);
+                dialog.dismiss();
+                chche_size.setText(0+"B");
+            }
+        });
         chche_size = (TextView) findViewById(R.id.cache_size);
         version = (TextView) findViewById(R.id.version);
         person_setting = (TextView) findViewById(R.id.person_setting);
@@ -90,9 +123,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.check_version:
                 ToastUtil.MyToast(this, "check_version");
+                // TODO: 2017/3/22
                 break;
             case R.id.clear_cache:
-                ToastUtil.MyToast(this, "clear_cache");
+              build.show();
                 break;
             case R.id.back_user:
                 BmobUser.logOut();   //清除缓存用户对象
@@ -107,6 +141,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
     }
+
+
 
 
 }

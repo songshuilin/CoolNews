@@ -45,6 +45,8 @@ import fragment.VedioFragment;
 import https.GetMusicAPI;
 import https.GetNewsForSearch;
 import https.GetVedioAPI;
+import model.MusicQueryBean;
+import model.MusicSingerBean;
 import model.UserBean;
 import model.VedioBean;
 import util.ToastUtil;
@@ -79,12 +81,13 @@ public class ShowNewsActivity extends AppCompatActivity
     private LinearLayout download;
     private UserBean curUser;
     private TextView username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_news);
         EventBus.getDefault().register(this);
-        curUser= BmobUser.getCurrentUser(UserBean.class);
+        curUser = BmobUser.getCurrentUser(UserBean.class);
         initView();//初始化各控件
         initData();
         setSupportActionBar(mToolbar);
@@ -97,9 +100,15 @@ public class ShowNewsActivity extends AppCompatActivity
     }
 
     private void initData() {
-        username.setText(curUser.getUsername());
-        userImg.setImageURI(Uri.parse(curUser.getImage().getFileUrl()));
-        Log.i("TAGss", "initData: "+Uri.parse(curUser.getImage().getFileUrl()));
+        if (curUser == null) {
+            username.setText("未登录");
+            userImg.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            username.setText(curUser.getUsername());
+            userImg.setImageURI(Uri.parse(curUser.getImage().getFileUrl()));
+        }
+
+        // Log.i("TAGss", "initData: "+Uri.parse(curUser.getImage().getFileUrl()));
         for (int i = 0; i < Constant.TABS.length; i++) {
             mTabText.add(Constant.TABS[i]);
         }
@@ -124,7 +133,7 @@ public class ShowNewsActivity extends AppCompatActivity
         musicViewpage = (ViewPager) findViewById(R.id.music_viewpager);
         newsLinner = (LinearLayout) findViewById(R.id.content_show_news);
         handView = mNv.getHeaderView(0);
-        username= (TextView) handView.findViewById(R.id.username);
+        username = (TextView) handView.findViewById(R.id.username);
         download = (LinearLayout) handView.findViewById(R.id.download);
         my_favorites = (LinearLayout) handView.findViewById(R.id.my_favorites);
         userImg = (SimpleDraweeView) handView.findViewById(R.id.usernameImg);
@@ -186,13 +195,8 @@ public class ShowNewsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    // GetNewsForSearch.getAllNews("美女",1);
-                }
-            }.start();
+            Intent intent = new Intent(ShowNewsActivity.this, SearchForWIKIActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -228,12 +232,12 @@ public class ShowNewsActivity extends AppCompatActivity
                 mToolbar.setTitle("视频爽看");
                 //Toast.makeText(this, "menu_videos", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.menu_musics:
-                setVisible(3);
-                getMusicList();
-                mToolbar.setTitle("音乐轻听");
-                // Toast.makeText(this, "menu_musics", Toast.LENGTH_SHORT).show();
-                break;
+//            case R.id.menu_musics:
+//                setVisible(3);
+//                getMusicList();
+//                mToolbar.setTitle("音乐轻听");
+//                // Toast.makeText(this, "menu_musics", Toast.LENGTH_SHORT).show();
+//                break;
             case R.id.menu_search:
                 Intent intent = new Intent(this, SearchAllNewsActivity.class);
                 startActivity(intent);
@@ -308,11 +312,11 @@ public class ShowNewsActivity extends AppCompatActivity
         View newsView = LayoutInflater.from(this).inflate(R.layout.pop_news, null);
         View pictureView = LayoutInflater.from(this).inflate(R.layout.pop_picture, null);
         View vedioVview = LayoutInflater.from(this).inflate(R.layout.pop_vedio, null);
-        View musciView = LayoutInflater.from(this).inflate(R.layout.pop_music, null);
+       // View musciView = LayoutInflater.from(this).inflate(R.layout.pop_music, null);
         floatingActionMenu.addActionsView(newsView);
         floatingActionMenu.addActionsView(pictureView);
         floatingActionMenu.addActionsView(vedioVview);
-        floatingActionMenu.addActionsView(musciView);
+        //floatingActionMenu.addActionsView(musciView);
         newsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,16 +345,16 @@ public class ShowNewsActivity extends AppCompatActivity
                 floatingActionMenu.collapse();
             }
         });
-        musciView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setVisible(3);
-                getMusicList();
-                mToolbar.setTitle("音乐轻听");
-                // Toast.makeText(ShowNewsActivity.this, "4", Toast.LENGTH_SHORT).show();
-                floatingActionMenu.collapse();
-            }
-        });
+//        musciView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setVisible(3);
+//                getMusicList();
+//                mToolbar.setTitle("音乐轻听");
+//                // Toast.makeText(ShowNewsActivity.this, "4", Toast.LENGTH_SHORT).show();
+//                floatingActionMenu.collapse();
+//            }
+//        });
 
     }
 
@@ -456,9 +460,10 @@ public class ShowNewsActivity extends AppCompatActivity
     }
 
     @Subscribe
-    public void finish(FinishEvent event){
+    public void finish(FinishEvent event) {
         finish();
     }
+
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);

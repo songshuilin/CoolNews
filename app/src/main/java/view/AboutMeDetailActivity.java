@@ -80,6 +80,10 @@ public class AboutMeDetailActivity extends AppCompatActivity implements View.OnC
         settings.setJavaScriptEnabled(true);
         //设置打开自带缩放按钮
         settings.setBuiltInZoomControls(true);
+
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 开启 DOM storage API 功能
+        webView.getSettings().setDomStorageEnabled(true);
         // 进行跳转用户输入的url地址
         webView.loadUrl(url);
         webView.setWebChromeClient(new WebChromeClient() {

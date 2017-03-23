@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="想了解更多技术文章，请扫码关注我" />
+        android:text="想了解更多技术文章，请扫码该二维码或者长按进入" />
 
     <ImageView
         android:id="@+id/img"

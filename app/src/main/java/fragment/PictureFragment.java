@@ -28,30 +28,31 @@ import model.PictureBean;
 import view.ReadNewsActivity;
 
 public class PictureFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
-    List<PictureBean>list=new ArrayList<>();
+    List<PictureBean> list = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private View view;
     private SwipeToLoadLayout swipeToLoadLayout;
-    private  String type;
-    private int next=1;
-     private  PictureAdapter adapter;
-     private String baseurl;
-    private Handler handler=new Handler(){
+    private String type;
+    private int next = 1;
+    private PictureAdapter adapter;
+    private String baseurl;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            //设置layoutManager
-            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-            switch (msg.what){
+
+
+            switch (msg.what) {
                 case 0x123:
-                    adapter=new PictureAdapter(list,getActivity());
+                    //设置layoutManager
+                    mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                    adapter = new PictureAdapter(list, getActivity());
                     mRecyclerView.setAdapter(adapter);
                     adapter.setListener(new PictureAdapter.OnClickItemListener() {
                         @Override
                         public void OnClickItem(View view, PictureBean pictureBean) {
-                           // Toast.makeText(getActivity(),pictureBean.toString(),Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getActivity(),pictureBean.toString(),Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getActivity(), ReadNewsActivity.class);
-                            intent.putExtra("url", pictureBean.getUrl());
                             intent.putExtra("title", pictureBean.getPictureTitle());
                             intent.putExtra("imgurl", pictureBean.getPictureUrl());
                             startActivity(intent);
@@ -60,8 +61,8 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
                     swipeToLoadLayout.setRefreshing(false);
                     break;
                 case 0x1234:
-
-                   adapter.notifyDataSetChanged();
+                    adapter.notifyItemRangeInserted(list.size(), 20);
+                   // adapter.notifyDataSetChanged();
 //                    adapter=new PictureAdapter(list,getActivity());
 //                    mRecyclerView.setAdapter(adapter);
 //                    adapter.setListener(new PictureAdapter.OnClickItemListener() {
@@ -78,7 +79,8 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
     };
 
 
-    public PictureFragment(){}
+    public PictureFragment() {
+    }
 
     /**
      * 初始化各view
@@ -94,13 +96,13 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (view == null) {
-            view=inflater.inflate(R.layout.fragment_picture, container, false);
+            view = inflater.inflate(R.layout.fragment_picture, container, false);
             initView();
-            Bundle bundle= getArguments();
-            type=  bundle.getString("type");
-            baseurl =GetPictureAPI.getUrlForType(type);
+            Bundle bundle = getArguments();
+            type = bundle.getString("type");
+            baseurl = GetPictureAPI.getUrlForType(type);
             autoRefresh();
-            onRefreshPicture();
+            // onRefreshPicture();
 
         }
 
@@ -114,16 +116,15 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
 
     /**
      * 下拉刷新图片
-     *
      */
-    public void onRefreshPicture(){
-        new Thread(){
+    public void onRefreshPicture() {
+        new Thread() {
             @Override
             public void run() {
                 super.run();
                 list.clear();
-                list=GetPictureAPI.getPictureList(type);
-                if (list==null){
+                list = GetPictureAPI.getPictureList(type);
+                if (list == null) {
                     return;
                 }
                 handler.sendEmptyMessage(0x123);
@@ -134,16 +135,16 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
     /**
      * 上拉加载图片
      */
-    public  void onLoadMorePicture(){
-        new Thread(){
+    public void onLoadMorePicture() {
+        new Thread() {
             @Override
             public void run() {
                 super.run();
-                String  nextUrl=nextUrl(baseurl);
-                List<PictureBean> nextList=GetPictureAPI.getPictureNextList(nextUrl);
+                String nextUrl = nextUrl(baseurl);
+                List<PictureBean> nextList = GetPictureAPI.getPictureNextList(nextUrl);
                 list.addAll(nextList);
                 handler.sendEmptyMessage(0x1234);
-                baseurl=nextUrl;
+                baseurl = nextUrl;
             }
         }.start();
 
@@ -169,6 +170,7 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
             }
         });
     }
+
     private void autoRefresh() {
         swipeToLoadLayout.post(new Runnable() {
             @Override
@@ -180,11 +182,12 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
 
     /**
      * 获取下一个url
+     *
      * @param url
      * @return
      */
-    public String nextUrl(String url){
-      //http://www.27270.com/ent/haibao/list_22_1.html
+    public String nextUrl(String url) {
+        //http://www.27270.com/ent/haibao/list_22_1.html
 
         //    .*[0-9]+.html   正则表达式匹配     数字.html
         //  http://www.xs8.cn/zongcai.html  如果该页url匹配不了.*[0-9]+.html则可以默认已加载到底了。
@@ -202,6 +205,6 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
             next++;
             return headUrl + next + ".html";
         }
-        return  null;
+        return null;
     }
 }

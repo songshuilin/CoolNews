@@ -1,11 +1,14 @@
 package view;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -30,6 +33,8 @@ import db.CollectNewsHelp;
 import db.dao.CollectNewsDao;
 import model.CollectNewsBean;
 import model.UserBean;
+import util.ToastUtil;
+
 
 public class ReadNewsActivity extends AppCompatActivity implements View.OnClickListener {
     private WebView webView;
@@ -40,10 +45,12 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
     private CollapsingToolbarLayout mCollLayout;
     private Toolbar mToolbar;
     private SimpleDraweeView mImg;
-    private ImageView backImg, rightImg,collectImg;
+    private ImageView backImg, rightImg, collectImg;
     private SQLiteDatabase db;
     private CollectNewsHelp help;
     private UserBean bean;
+    private AlertDialog.Builder builder;
+
     /**
      * 初始化控件
      */
@@ -57,26 +64,40 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
         rightImg = (ImageView) findViewById(R.id.right_img);
         backImg.setOnClickListener(this);
         rightImg.setOnClickListener(this);
-        collectImg= (ImageView) findViewById(R.id.collect_img);
+        collectImg = (ImageView) findViewById(R.id.collect_img);
         collectImg.setOnClickListener(this);
+        builder=new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("你还没有登录！, 请登录");
+        builder.setNegativeButton("取消",null);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent=new Intent(ReadNewsActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_news);
+        bean=BmobUser.getCurrentUser(UserBean.class);
         url = getIntent().getStringExtra("url");
         title = getIntent().getStringExtra("title");
         imgUrl = getIntent().getStringExtra("imgurl");
         initViews();
         showWebview();
-         help=new CollectNewsHelp(this,"collect.db",null,1);
-         db=help.getReadableDatabase();
+        help = new CollectNewsHelp(this, "collect.db", null, 1);
+        db = help.getReadableDatabase();
         mCollLayout.setTitle(Html.fromHtml(title));
-        if (imgUrl!=null){
+        if (imgUrl != null) {
             Uri uri = Uri.parse(imgUrl);
             mImg.setImageURI(uri);
-        }else {
+        } else {
             mImg.setImageURI("");
         }
 
@@ -94,6 +115,10 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
         settings.setJavaScriptEnabled(true);
         //设置打开自带缩放按钮
         settings.setBuiltInZoomControls(true);
+        //设置 缓存模式
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 开启 DOM storage API 功能
+        webView.getSettings().setDomStorageEnabled(true);
         // 进行跳转用户输入的url地址
         webView.loadUrl(url);
         webView.setWebChromeClient(new WebChromeClient() {
@@ -178,12 +203,16 @@ public class ReadNewsActivity extends AppCompatActivity implements View.OnClickL
                 showShare();
                 break;
             case R.id.collect_img:
-               // finish();
-                CollectNewsDao.insertCollectNews(db,new CollectNewsBean(
-                    BmobUser.getCurrentUser(UserBean.class).getUsername(),
-                    url,imgUrl,title));
-                Toast.makeText(ReadNewsActivity.this,"收藏成功...",Toast.LENGTH_SHORT).show();
-            break;
+                if (bean==null){
+                   builder.show();
+                    return;
+                }
+                // finish();
+                CollectNewsDao.insertCollectNews(db, new CollectNewsBean(
+                        BmobUser.getCurrentUser(UserBean.class).getUsername(),
+                        url, imgUrl, title));
+                Toast.makeText(ReadNewsActivity.this, "收藏成功...", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

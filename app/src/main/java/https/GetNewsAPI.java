@@ -12,13 +12,13 @@ import server.NewsService;
 
 import static constants.Constant.API_KEY;
 import static constants.Constant.APPLE_NEWS;
-import static constants.Constant.BASE_URL;
 import static constants.Constant.FOOTBALL_NEWS;
 import static constants.Constant.GUONEI_NEWS;
 import static constants.Constant.HEALTH_NEWS;
 import static constants.Constant.HUABIAN_NEWS;
 import static constants.Constant.IT_NEWS;
 import static constants.Constant.NBA_NEWS;
+import static constants.Constant.NEWS_BASE_URL;
 import static constants.Constant.SOCIAL_NEWS;
 import static constants.Constant.STARTUP_NEWS;
 import static constants.Constant.TIYU_NEWS;
@@ -45,7 +45,7 @@ public class GetNewsAPI {
         //1.创建Retrofit对象
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL).build();
+                .baseUrl(NEWS_BASE_URL).build();
         //2.创建访问API的请求
         NewsService service = retrofit.create(NewsService.class);
         //根据类型返回哪个新闻接口

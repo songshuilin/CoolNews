@@ -81,6 +81,7 @@ public class FeedBackActivity extends AppCompatActivity implements View.OnClickL
                 String contact=mContact_ways.getText().toString();
                 if (TextUtils.isEmpty(contact)||TextUtils.isEmpty(content)){
                     ToastUtil.MyToast(FeedBackActivity.this,"输入有空，请检查。");
+                    return;
                 }
                 FeedBackBean feedBack = new FeedBackBean();
                 feedBack.setContactWays(contact);

@@ -41,7 +41,8 @@ public class VedioFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private VedioAdapter adapter;
     private VedioLocalAdapter vedioLocalAdapter;
-
+    private String title;
+    private String url;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -59,10 +60,8 @@ public class VedioFragment extends Fragment {
                     adapter.setListener(new VedioAdapter.OnClickItemListener() {
                         @Override
                         public void OnClickItem(View view, VedioBean bean) {
-                            Intent intent=new Intent(getActivity(),PlayVedioActivity.class);
-                            intent.putExtra("title",bean.getVedio_title());
-                            intent.putExtra("url",bean.getVedio_url());
-                            startActivity(intent);
+                             title=bean.getVedio_title();
+                             getUrl(bean.getVedio_url());//获取url
                         }
                     });
                     break;
@@ -81,9 +80,33 @@ public class VedioFragment extends Fragment {
                       });
                     break;
 
+                case 0x12345:
+                    Intent intent=new Intent(getActivity(),PlayVedioActivity.class);
+                    intent.putExtra("title",title);
+                    intent.putExtra("url",url);
+                    startActivity(intent);
+                    break;
+
             }
         }
     };
+
+    /**
+     * 获取视频url
+     * @param vedio_url
+     * @return
+     */
+    private void getUrl(final String vedio_url) {
+          new Thread(){
+              @Override
+              public void run() {
+                  super.run();
+                  url=GetVedioAPI.getUrl(vedio_url);
+                  handler.sendEmptyMessage(0x12345);
+              }
+          }.start();
+
+    }
 
     public VedioFragment() {
 
@@ -105,11 +128,10 @@ public class VedioFragment extends Fragment {
             initView();
             if (Constant.VEDIO_ONLINE.equals(type)){
                 EventBus.getDefault().register(this);
-                GetVedioAPI.queryVedioBeanAll();//获取在线视频
+                getVedioOnLine();//获取在线视频
             }else if (Constant.VEDIO_UNLINE.equals(type)){
                 getLocalVedio();//获取本地视频
             }
-
         }
 
         //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
@@ -122,14 +144,26 @@ public class VedioFragment extends Fragment {
     }
 
     /**
+     * 获取在线视频
+     */
+    public void getVedioOnLine(){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                GetVedioAPI.queryVedioBeanAll();//获取在线视频
+            }
+        }.start();
+    }
+    /**
      * 初始化view
      */
     private void initView() {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
     }
 
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void getVedioList(VedioEvent event) {
         list = event.getList();
         Log.i("bbbbfff", "getVedioList: "+list);
@@ -153,4 +187,5 @@ public class VedioFragment extends Fragment {
             }
         }.start();
     }
+
 }

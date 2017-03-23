@@ -157,8 +157,11 @@ public class MyCollectNewsActivity extends AppCompatActivity implements View.OnC
             @Override
             public void run() {
                 super.run();
-                list = CollectNewsDao.queryCollectNewsAll(db);
-                handler.sendEmptyMessage(0x123);
+                if (bean!=null){
+                    list = CollectNewsDao.queryCollectNewsAll(db);
+                    handler.sendEmptyMessage(0x123);
+                }
+
             }
         }.start();
     }

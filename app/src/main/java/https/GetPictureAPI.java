@@ -2,7 +2,6 @@ package https;
 
 
 import android.os.Parcel;
-import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,36 +21,32 @@ import static constants.Constant.*;
 
 public class GetPictureAPI {
 
+
     public static List<PictureBean> getPictureList(String type) {
         List<PictureBean> list = null;
         try {
-            String url=getUrlForType(type);
+            String url = getUrlForType(type);
             Document document = Jsoup.connect(url).get();
-            String str=document.toString();
-            Elements meinv = document.getElementsByClass("listUll");
-            Elements meinvs = meinv.get(1).getElementsByClass("libox");
+            Elements imgs = document.getElementsByTag("img");
 
-            if (meinvs != null) {
+            if (imgs != null) {
                 list = new ArrayList<>();
             }
 
-            for (int i = 0; i < meinvs.size(); i++) {
+            for (int i = 10; i < imgs.size()-10; i++) {
                 PictureBean pictureBean = new PictureBean(Parcel.obtain());
-                String imgUrl = meinvs.get(i).getElementsByTag("img").attr("lazysrc");//图片url
-                String imgTitle = meinvs.get(i).getElementsByTag("p").text();//图片描述
-                String htmlUrl=meinvs.get(i).getElementsByTag("a").attr("href");
-                pictureBean.setUrl(htmlUrl);
-                pictureBean.setPictureTitle(imgTitle);
-                pictureBean.setPictureUrl(imgUrl);
-                list.add(pictureBean);
+                if (imgs.get(i).hasAttr("alt")) {
+                    String imgTitle = imgs.get(i).attr("alt");//图片描述
+                    String imgUrl = imgs.get(i).attr("src");
+                    pictureBean.setPictureUrl(imgUrl);
+                    pictureBean.setPictureTitle(imgTitle);
+                    list.add(pictureBean);
+                }
             }
-
             return list;
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return list;
     }
 
@@ -60,23 +55,22 @@ public class GetPictureAPI {
         List<PictureBean> list = null;
         try {
             Document document = Jsoup.connect(nextUrl).get();
-            String str=document.toString();
-            Elements meinv = document.getElementsByClass("listUll");
-            Elements meinvs = meinv.get(1).getElementsByClass("libox");
+            Elements imgs = document.getElementsByTag("img");
 
-            if (meinvs != null) {
+            if (imgs != null) {
                 list = new ArrayList<>();
             }
 
-            for (int i = 0; i < meinvs.size(); i++) {
+            for (int i = 0; i < imgs.size(); i++) {
                 PictureBean pictureBean = new PictureBean(Parcel.obtain());
-                String imgUrl = meinvs.get(i).getElementsByTag("img").attr("lazysrc");//图片url
-                String imgTitle = meinvs.get(i).getElementsByTag("p").text();//图片描述
-                pictureBean.setPictureTitle(imgTitle);
-                pictureBean.setPictureUrl(imgUrl);
-                list.add(pictureBean);
+                if (imgs.get(i).hasAttr("alt")) {
+                    String imgTitle = imgs.get(i).attr("alt");//图片描述
+                    String imgUrl = imgs.get(i).attr("src");
+                    pictureBean.setPictureUrl(imgUrl);
+                    pictureBean.setPictureTitle(imgTitle);
+                    list.add(pictureBean);
+                }
             }
-
             return list;
 
         } catch (IOException e) {

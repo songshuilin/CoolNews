@@ -10,12 +10,12 @@ import android.os.Parcelable;
 public class PictureBean implements Parcelable {
     private String pictureUrl;
     private String pictureTitle;
-    private String url;
+
 
     public PictureBean(Parcel in) {
         pictureUrl = in.readString();
         pictureTitle = in.readString();
-        url = in.readString();
+
     }
 
     public static final Creator<PictureBean> CREATOR = new Creator<PictureBean>() {
@@ -46,13 +46,7 @@ public class PictureBean implements Parcelable {
         this.pictureTitle = pictureTitle;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     @Override
     public int describeContents() {
@@ -63,14 +57,13 @@ public class PictureBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(pictureUrl);
         dest.writeString(pictureTitle);
-        dest.writeString(url);
+
     }
     @Override
     public String toString() {
         return "PictureBean{" +
                 "pictureUrl='" + pictureUrl + '\'' +
                 ", pictureTitle='" + pictureTitle + '\'' +
-                ", url='" + url + '\'' +
                 '}';
     }
 }

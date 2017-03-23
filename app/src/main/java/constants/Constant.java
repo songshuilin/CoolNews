@@ -6,7 +6,7 @@ package constants;
 
 public interface Constant {
     // 新闻
-    String BASE_URL = "http://api.tianapi.com/";//新闻
+    String NEWS_BASE_URL = "http://api.tianapi.com/";//新闻
     String API_KEY = "b917ce35b6958f7199810f9348fc33ef";
     String SOCIAL_NEWS = "社会";
     String GUONEI_NEWS = "国内";
@@ -36,17 +36,17 @@ public interface Constant {
     String PICTURE_URL_CAR = "http://www.27270.com/beautiful/qichetuku/list_15_1.html";//汽车
     String PICTURE_URL_ANIMAL = "http://www.27270.com/word/dongwushijie/list_8_1.html";//动物
     String PICTURE_URL_FUN = "http://www.27270.com/word/gaoxiaoqutu/list_7_1.html";//搞笑
-    String PICTURE_URL_LOVELY =  "http://www.27270.com/qita/mengtu/list_27_1.html";//可爱
-    String PICTURE_URL_POSTER =  "http://www.27270.com/ent/haibao/list_22_1.html";//海报
+    String PICTURE_URL_LOVELY = "http://www.27270.com/qita/mengtu/list_27_1.html";//可爱
+    String PICTURE_URL_POSTER = "http://www.27270.com/ent/haibao/list_22_1.html";//海报
 
     String PICTURE_STAR = "明星";
-    String PICTURE_CAR= "汽车";
+    String PICTURE_CAR = "汽车";
     String PICTURE__ANIMAL = "动物";
     String PICTURE_FUN = "搞笑";
-    String PICTURE_LOVELY="可爱";
-    String PICTURE_POSTER="海报";
-    String TAB_PICTURE[] = {PICTURE_STAR,PICTURE_CAR,PICTURE__ANIMAL,PICTURE_FUN
-    ,PICTURE_LOVELY,PICTURE_POSTER
+    String PICTURE_LOVELY = "可爱";
+    String PICTURE_POSTER = "海报";
+    String TAB_PICTURE[] = {PICTURE_STAR, PICTURE_CAR, PICTURE__ANIMAL, PICTURE_FUN
+            , PICTURE_LOVELY, PICTURE_POSTER
     };
 
 
@@ -54,34 +54,44 @@ public interface Constant {
      * 视频
      */
     //tring VEDIO_URL="http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1";
-     String VEDIO_URL="http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1#";
+    // String VEDIO_URL = "http://v.jxntv.cn/so/?fr=pg&ch=138&ca=138&pg=1#";
+    //String VEDIO_URL = "http://v.jxntv.cn/so/?fr=pg&ca=138&pg=1";
+    String VEDIO_URL ="http://app.jxntv.cn/?app=search&action=search&wd=+URLEncoder.encode(key, \"UTF-8\")+&type=video";
+    String VEDIO_ONLINE = "在线视频";
+    String VEDIO_UNLINE = "本地视频";
 
-    String  VEDIO_ONLINE="在线视频";
-    String   VEDIO_UNLINE="本地视频";
-
-    String TAB_VEDIO[]={VEDIO_ONLINE,VEDIO_UNLINE};
+    String TAB_VEDIO[] = {VEDIO_ONLINE, VEDIO_UNLINE};
 
 
     /**
      * 音乐
      */
+    //    音乐类API
+    //http://music.163.com/api/playlist/detail?id=58451795
+    String MUSIC_BASE_URL = "http://apis.baidu.com/geekery/music/";
+    String MUSIC_ONLINE = "在线音乐";
+    String MUSIC_UNLINE = "本地音乐";
 
-    String  MUSIC_ONLINE="在线音乐";
-    String   MUSIC_UNLINE="本地音乐";
-
-    String TAB_MUSIC[]={MUSIC_ONLINE,MUSIC_UNLINE};
+    String TAB_MUSIC[] = {MUSIC_ONLINE, MUSIC_UNLINE};
 
     /**
      * 新闻的搜索
      */
-    String SEARCH_NEWS="http://news.baidu.com/ns?cl=2&rn=20&tn=news&word=美女";
+    String SEARCH_NEWS = "http://news.baidu.com/ns?cl=2&rn=20&tn=news&word=美女";
+
+    /**
+     * 百科一下
+     */
+    String SEARCH_WIKI_URL = "http://www.baike.com/wiki/";
 
 
     /**
      * 表名
      */
 
-    String SEARCH_HISTORY_TABLE="SEARCH_HISTORY_TABLE";
+    String SEARCH_HISTORY_TABLE = "SEARCH_HISTORY_TABLE";
 
-    String COLLECT_NEWS_TABLE="COLLECT_NEWS_TABLE";
+    String COLLECT_NEWS_TABLE = "COLLECT_NEWS_TABLE";
+
+
 }

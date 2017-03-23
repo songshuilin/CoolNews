@@ -66,7 +66,7 @@ public class VedioAdapter extends RecyclerView.Adapter<VedioAdapter.MyHodler>
 
     @Override
     public void onBindViewHolder(MyHodler holder, int position) {
-
+         holder.vedioTime.setText(list.get(position).getTime());
         holder.vedioInfo.setText(list.get(position).getVedio_title());
         holder.draweeView.setImageURI(Uri.parse(list.get(position).getVedio_img()));
         holder.itemView.setTag(list.get(position));//为item设置tag,
@@ -82,11 +82,12 @@ public class VedioAdapter extends RecyclerView.Adapter<VedioAdapter.MyHodler>
 
         private TextView vedioInfo;//视频的描述
         private SimpleDraweeView draweeView;//视频的图片
-
+        private TextView vedioTime;//视频的时间
         public MyHodler(View itemView) {
             super(itemView);
             vedioInfo= (TextView) itemView.findViewById(R.id.vedio_info);
             draweeView = (SimpleDraweeView) itemView.findViewById(R.id.img);
+            vedioTime= (TextView) itemView.findViewById(R.id.vedio_time);
         }
     }
 }

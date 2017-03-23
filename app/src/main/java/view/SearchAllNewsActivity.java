@@ -218,7 +218,6 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
             }
         }.start();
 
-
     }
 
 

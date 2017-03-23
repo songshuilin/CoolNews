@@ -34,7 +34,7 @@ public class LoadMoreFooterView extends LinearLayout implements SwipeTrigger, Sw
                 , Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(500);
-        rotate.setRepeatCount(30);
+        rotate.setRepeatCount(100);
         rotate.setRepeatMode(Animation.INFINITE);
         ((ImageView)(this.getChildAt(0))).startAnimation(rotate);
     }

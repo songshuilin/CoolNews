@@ -123,9 +123,11 @@ public class SettingUpadeUserActivity extends AppCompatActivity implements View.
         usernaem = (EditText) findViewById(R.id.username);
         back_img = (ImageView) findViewById(R.id.back_img);
         choiseImg = (SimpleDraweeView) findViewById(R.id.img);
-        usernaem.setText(userBean.getUsername());
-        email.setText(userBean.getEmail());
-        choiseImg.setImageURI(Uri.parse(userBean.getImage().getFileUrl()));
+        if (userBean!=null){
+            usernaem.setText(userBean.getUsername());
+            email.setText(userBean.getEmail());
+            choiseImg.setImageURI(Uri.parse(userBean.getImage().getFileUrl()));
+        }
         back_img.setOnClickListener(this);
         choiseImg.setOnClickListener(this);
 

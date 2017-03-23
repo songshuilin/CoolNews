@@ -35,7 +35,7 @@ public class RefreshHeaderView extends RelativeLayout implements SwipeRefreshTri
                 , Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(1000);
-        rotate.setRepeatCount(12);
+        rotate.setRepeatCount(120);
         rotate.setRepeatMode(Animation.INFINITE);
         ((ImageView)(this.getChildAt(0))).startAnimation(rotate);
     }

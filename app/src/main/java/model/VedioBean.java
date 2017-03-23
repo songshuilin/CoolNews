@@ -10,6 +10,15 @@ public class VedioBean extends BmobObject {
     private String vedio_url;
     private String vedio_img;
     private String vedio_title;
+    private String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getVedio_url() {
         return vedio_url;
@@ -41,6 +50,7 @@ public class VedioBean extends BmobObject {
                 "vedio_url='" + vedio_url + '\'' +
                 ", vedio_img='" + vedio_img + '\'' +
                 ", vedio_title='" + vedio_title + '\'' +
+                ", time='" + time + '\'' +
                 '}';
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.util.LruCache;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -29,7 +30,6 @@ import util.ToastUtil;
  * 注册
  */
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
-
     private ImageView back_img;
     private ImageView bigImage;
     private AlertDialog.Builder builder;
