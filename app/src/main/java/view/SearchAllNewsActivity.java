@@ -1,5 +1,6 @@
 package view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -65,12 +67,14 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
     private SwipeToLoadLayout swipeToLoadLayout;
     private int count = 1;
      private String loadkey;
+    private ProgressDialog dialog;
 
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+
                 switch (msg.what) {
                 case 0x12345:
                     adapter.notifyDataSetChanged();
@@ -113,6 +117,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
 
                         @Override
                         public void OnClickTextView(View view, SearchHistoryBean bean) {
+                            dialog.show();
                             loadkey=bean.getKey();
                            // Toast.makeText(SearchAllNewsActivity.this, bean.toString(), Toast.LENGTH_SHORT).show();
                             autoCompleteTextView.setText(loadkey);
@@ -150,6 +155,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
                     break;
 
             }
+            dialog.dismiss();
         }
     };
 
@@ -166,6 +172,9 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
+        dialog=new ProgressDialog(this);
+        dialog.setTitle("正在加载中...");
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         swipeToLoadLayout = (SwipeToLoadLayout) findViewById(R.id.swipeToLoadLayout);
         swipeToLoadLayout.setOnLoadMoreListener(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.swipe_target);
@@ -246,6 +255,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
                     Toast.makeText(SearchAllNewsActivity.this, "搜索不能为空！", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                dialog.show();
                 SearchHistoryBean bean = new SearchHistoryBean(key,(int)System.currentTimeMillis());
                 searchHistory(key);
                 SearchNewsHistoryDao.insertSearchNews(db,bean);
