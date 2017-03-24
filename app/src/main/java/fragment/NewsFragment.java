@@ -3,6 +3,7 @@ package fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,44 +20,51 @@ import com.example.edu.coolnews.R;
 import java.util.List;
 
 import adapter.NewsAdapter;
+import base.LazyLoadFragment;
 import https.GetNewsAPI;
 import model.NewsBean;
 import model.OnNetRequestListener;
 import view.ReadNewsActivity;
 
 
-public class NewsFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
-    private View view;
+public class NewsFragment extends LazyLoadFragment implements OnRefreshListener, OnLoadMoreListener {
     private RecyclerView mRecyclerView;
     private String type;
     private NewsAdapter adapter;
     private SwipeToLoadLayout swipeToLoadLayout;
     private int count = 1;
     private List<NewsBean.NewslistBean> list;
+    private boolean isPrepared;
 
     public NewsFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_news, container, false);
-            initView();
+    protected void lazyLoad() {
+        if (isPrepared && isVisible) {
             Bundle bundle = getArguments();
             type = bundle.getString("type");
             autoRefresh();
             onRefreshNews();
+            isPrepared = false;
         }
-        //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
-        ViewGroup parent = (ViewGroup) view.getParent();
-        if (parent != null) {
-            parent.removeView(view);
-        }
-        return view;
     }
+
+    @Override
+    protected int getContentView() {
+        return 0;
+    }
+
+    @Override
+    protected void initView(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
+        swipeToLoadLayout = (SwipeToLoadLayout) view.findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        isPrepared = true;
+    }
+
 
     /**
      * 上拉加载
@@ -89,7 +97,7 @@ public class NewsFragment extends Fragment implements OnRefreshListener, OnLoadM
             @Override
             public void onSuccess(NewsBean data) {
                 if (data != null) {
-                    list=data.getNewslist();
+                    list = data.getNewslist();
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                     mRecyclerView.setLayoutManager(layoutManager);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -107,6 +115,7 @@ public class NewsFragment extends Fragment implements OnRefreshListener, OnLoadM
                     mRecyclerView.setAdapter(adapter);
                     swipeToLoadLayout.setRefreshing(false);
                 }
+
             }
 
             @Override
@@ -116,15 +125,6 @@ public class NewsFragment extends Fragment implements OnRefreshListener, OnLoadM
         });
     }
 
-    /**
-     * 初始化各view
-     */
-    private void initView() {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
-        swipeToLoadLayout = (SwipeToLoadLayout) view.findViewById(R.id.swipeToLoadLayout);
-        swipeToLoadLayout.setOnRefreshListener(this);
-        swipeToLoadLayout.setOnLoadMoreListener(this);
-    }
 
     @Override
     public void onLoadMore() {
@@ -145,8 +145,8 @@ public class NewsFragment extends Fragment implements OnRefreshListener, OnLoadM
             @Override
             public void run() {
                 // mAdapter.add("REFRESH:\n" + new Date());
-                if (list!=null)
-                list.clear();//清空
+                if (list != null)
+                    list.clear();//清空
                 onRefreshNews();
             }
         });

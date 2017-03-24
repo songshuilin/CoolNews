@@ -22,20 +22,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adapter.PictureAdapter;
+import base.LazyLoadFragment;
 import constants.Constant;
 import https.GetPictureAPI;
 import model.PictureBean;
 import view.ReadNewsActivity;
 
-public class PictureFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
+public class PictureFragment extends LazyLoadFragment implements OnRefreshListener, OnLoadMoreListener {
     List<PictureBean> list = new ArrayList<>();
     private RecyclerView mRecyclerView;
-    private View view;
     private SwipeToLoadLayout swipeToLoadLayout;
     private String type;
     private int next = 1;
     private PictureAdapter adapter;
     private String baseurl;
+
+    private boolean isPrepared;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -82,36 +84,28 @@ public class PictureFragment extends Fragment implements OnRefreshListener, OnLo
     public PictureFragment() {
     }
 
-    /**
-     * 初始化各view
-     */
-    private void initView() {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
-        swipeToLoadLayout = (SwipeToLoadLayout) view.findViewById(R.id.swipeToLoadLayout);
-        swipeToLoadLayout.setOnRefreshListener(this);
-        swipeToLoadLayout.setOnLoadMoreListener(this);
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_picture, container, false);
-            initView();
+    protected void lazyLoad() {
+        if (isPrepared && isVisible) {
             Bundle bundle = getArguments();
             type = bundle.getString("type");
             baseurl = GetPictureAPI.getUrlForType(type);
             autoRefresh();
-            // onRefreshPicture();
-
+            isPrepared = false;
         }
+    }
+    @Override
+    protected int getContentView() {
+        return 0;
+    }
 
-        //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
-        ViewGroup parent = (ViewGroup) view.getParent();
-        if (parent != null) {
-            parent.removeView(view);
-        }
-        return view;
+    @Override
+    protected void initView(View view) {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
+        swipeToLoadLayout = (SwipeToLoadLayout) view.findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
+        isPrepared = true;
     }
 
     /**
