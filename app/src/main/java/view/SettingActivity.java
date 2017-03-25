@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.edu.coolnews.R;
+import com.tencent.bugly.beta.Beta;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -90,18 +91,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //获取本地的版本号
-    private int getVersionCode() {
+    private String getVersionCode() {
         PackageManager packageManager = getPackageManager();
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            int versionCode = packageInfo.versionCode;
-            version.setText("当前版本号 : "+versionCode);//设置当前版本号
-            return versionCode;
+            String versionName = packageInfo.versionName;
+            version.setText("当前版本号 : "+versionName);//设置当前版本号
+            return versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return -1;
+        return "";
     }
 
     /**
@@ -122,8 +123,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent2);
                 break;
             case R.id.check_version:
-                ToastUtil.MyToast(this, "check_version");
-                // TODO: 2017/3/22
+                //  ToastUtil.MyToast(this, "check_version");
+                Beta.checkUpgrade();//检查版本号
                 break;
             case R.id.clear_cache:
               build.show();

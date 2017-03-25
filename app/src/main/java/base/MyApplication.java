@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 
 import cn.bmob.v3.Bmob;
 import cn.sharesdk.framework.ShareSDK;
@@ -24,6 +25,8 @@ public class MyApplication extends Application {
         //第一：默认初始化
         Bmob.initialize(this, "1273b4298603e20842ba91504c936403");
 
+
+        //Beta.autoCheckUpgrade = false;//设置不自动检查
         Bugly.init(this, "252ef731ff", false);
 
 

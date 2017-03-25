@@ -42,8 +42,6 @@ public class PictureFragment extends LazyLoadFragment implements OnRefreshListen
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-
-
             switch (msg.what) {
                 case 0x123:
                     //设置layoutManager

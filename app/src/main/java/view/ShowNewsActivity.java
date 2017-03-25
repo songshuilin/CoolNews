@@ -42,13 +42,7 @@ import fragment.MusicFragment;
 import fragment.PictureFragment;
 import fragment.NewsFragment;
 import fragment.VedioFragment;
-import https.GetMusicAPI;
-import https.GetNewsForSearch;
-import https.GetVedioAPI;
-import model.MusicQueryBean;
-import model.MusicSingerBean;
 import model.UserBean;
-import model.VedioBean;
 import util.ToastUtil;
 
 

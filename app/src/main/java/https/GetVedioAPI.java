@@ -95,10 +95,10 @@ public class GetVedioAPI {
      *
      * @return
      */
-    public static void queryVedioBeanAll() {
+    public static void queryVedioBeanAll(int page) {
         List<VedioBean> beanList = null;
         try {
-            Document document = Jsoup.connect("http://app.jxntv.cn/?app=search&action=search&wd=" + URLEncoder.encode("江西" + "UTF-8") + "&type=video&order=rel&page=1").get();
+            Document document = Jsoup.connect("http://app.jxntv.cn/?app=search&action=search&wd=" + URLEncoder.encode("江西" + "UTF-8") + "&type=video&order=rel&page="+page).get();
             Elements elements = document.getElementsByClass("main");
             Elements newsitem = elements.get(0).getElementsByClass("newsitem");
             if (newsitem.size() > 0) {

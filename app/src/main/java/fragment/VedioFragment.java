@@ -14,12 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aspsine.swipetoloadlayout.OnLoadMoreListener;
+import com.aspsine.swipetoloadlayout.OnRefreshListener;
+import com.aspsine.swipetoloadlayout.SwipeToLoadLayout;
 import com.example.edu.coolnews.R;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import adapter.VedioAdapter;
@@ -34,8 +38,7 @@ import util.ToastUtil;
 import view.PlayVedioActivity;
 
 
-public class VedioFragment extends Fragment {
-    private List<VedioBean> list;
+public class VedioFragment extends Fragment implements OnRefreshListener, OnLoadMoreListener {
     private List<VedioLocalBean>localBeanList;
     private View view;
     private RecyclerView mRecyclerView;
@@ -43,19 +46,22 @@ public class VedioFragment extends Fragment {
     private VedioLocalAdapter vedioLocalAdapter;
     private String title;
     private String url;
+    private SwipeToLoadLayout swipeToLoadLayout;
+    private int count=1;
+    private List<VedioBean> moreList=new ArrayList<>();
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            //设置layoutManager
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            mRecyclerView.setLayoutManager(layoutManager);
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST));
             switch (msg.what) {
                 case 0x123:
+                    //设置layoutManager
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                    mRecyclerView.setLayoutManager(layoutManager);
+                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST));
                     Log.i("TAGaaaaaaaaaa", "handleMessage:.................... ");
-                    adapter = new VedioAdapter(list, getActivity());
+                    adapter = new VedioAdapter(moreList, getActivity());
                     mRecyclerView.setAdapter(adapter);
                     adapter.setListener(new VedioAdapter.OnClickItemListener() {
                         @Override
@@ -64,8 +70,9 @@ public class VedioFragment extends Fragment {
                              getUrl(bean.getVedio_url());//获取url
                         }
                     });
-                    break;
+                    swipeToLoadLayout.setRefreshing(false);
 
+                    break;
                 case 0x1234:
                     vedioLocalAdapter = new VedioLocalAdapter(localBeanList, getActivity());
                     mRecyclerView.setAdapter(vedioLocalAdapter);
@@ -86,7 +93,10 @@ public class VedioFragment extends Fragment {
                     intent.putExtra("url",url);
                     startActivity(intent);
                     break;
-
+                case 0x123456:
+                    adapter.notifyDataSetChanged();
+                    swipeToLoadLayout.setLoadingMore(false);
+                    break;
             }
         }
     };
@@ -126,6 +136,7 @@ public class VedioFragment extends Fragment {
             Log.i("TAG", "onCreateView: "+type);
             view = inflater.inflate(R.layout.fragment_vedio, container, false);
             initView();
+            autoRefresh();
             if (Constant.VEDIO_ONLINE.equals(type)){
                 EventBus.getDefault().register(this);
                 getVedioOnLine();//获取在线视频
@@ -151,7 +162,7 @@ public class VedioFragment extends Fragment {
             @Override
             public void run() {
                 super.run();
-                GetVedioAPI.queryVedioBeanAll();//获取在线视频
+                GetVedioAPI.queryVedioBeanAll(1);//获取在线视频
             }
         }.start();
     }
@@ -160,14 +171,24 @@ public class VedioFragment extends Fragment {
      */
     private void initView() {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.swipe_target);
+        swipeToLoadLayout = (SwipeToLoadLayout) view.findViewById(R.id.swipeToLoadLayout);
+        swipeToLoadLayout.setOnRefreshListener(this);
+        swipeToLoadLayout.setOnLoadMoreListener(this);
     }
 
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void getVedioList(VedioEvent event) {
-        list = event.getList();
-        Log.i("bbbbfff", "getVedioList: "+list);
-        handler.sendEmptyMessage(0x123);
+        if (count>1){
+            moreList.addAll(event.getList());
+            handler.sendEmptyMessage(0x123456);
+        }else {
+            if (!moreList.isEmpty()){
+                moreList.clear();
+            }
+            moreList.addAll(event.getList());
+            handler.sendEmptyMessage(0x123);
+        }
     }
 
     @Override
@@ -188,4 +209,33 @@ public class VedioFragment extends Fragment {
         }.start();
     }
 
+    @Override
+    public void onLoadMore() {
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    count++;
+                    GetVedioAPI.queryVedioBeanAll(count);
+                }
+            }.start();
+    }
+
+    @Override
+    public void onRefresh() {
+        count=1;
+        if (moreList != null)
+            moreList.clear();//清空
+        getVedioOnLine();
+    }
+
+
+    private void autoRefresh() {
+        swipeToLoadLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeToLoadLayout.setRefreshing(true);
+            }
+        });
+    }
 }
