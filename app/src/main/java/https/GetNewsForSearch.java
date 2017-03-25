@@ -27,7 +27,7 @@ public class GetNewsForSearch {
 //            Log.i("TAGww", "getAllNews: "+"http://news.baidu.com/ns?cl=" + page + "&rn=20&tn=news&word="
 //                    + key);
            Document document = Jsoup.connect("http://news.baidu.com/ns?word="+ URLEncoder.encode(key, "UTF-8") +"&tn=news&from=news&cl="+page+"&rn=20&ct=0").get();
-           // Document document = Jsoup.connect("http://news.baidu.com/ns?word=%E5%8C%97%E4%BA%AC&tn=news&from=news&cl=2&rn=20&ct=0").get();
+           // Document document = Jsoup.connect("http://news.baidu.com/ns?word=%E5%8C%97%E4%BA%AC&tn=news&from=news&cl=1&rn=20&ct=0").get();
             Element content = document.getElementById("content_left");
             Elements results = content.getElementsByClass("result");
            String nums= document.getElementsByClass("nums").get(0).text();

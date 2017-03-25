@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:fresco="http://schemas.android.com/tools"
     android:layout_margin="5dp"
     app:cardCornerRadius="8dp"
     android:padding="5dp"
     app:cardElevation="5dp">
 
     <LinearLayout
+        xmlns:fresco="http://schemas.android.com/tools"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -56,7 +56,7 @@
             android:id="@+id/img"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            fresco:actualImageScaleType="centerInside"
+            fresco:placeholderImage="@mipmap/ic_error"
             />
     </LinearLayout>
 </android.support.v7.widget.CardView>

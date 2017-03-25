@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import adapter.NewsAdapter;
 import adapter.SearchHistoryNewsAdapter;
+import adapter.SearchNewsAdapter;
 import db.SearchNewsHistoryHelp;
 import db.dao.SearchNewsHistoryDao;
 import https.GetNewsForSearch;
@@ -54,7 +55,7 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
     private AutoCompleteTextView autoCompleteTextView;
     private ImageView mSearch;
     private List<NewsBean.NewslistBean> list;
-    private NewsAdapter adapter;
+    private SearchNewsAdapter adapter;
     private SearchHistoryNewsAdapter searchAdapter;
     private SQLiteDatabase db;
     private SearchNewsHistoryHelp serarchHelp;
@@ -86,9 +87,9 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
                     hint.setVisibility(View.VISIBLE);
                     mRecyclerView.setLayoutManager(layoutManager);
                     layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                    adapter = new NewsAdapter(list, SearchAllNewsActivity.this);
+                    adapter = new SearchNewsAdapter(list, SearchAllNewsActivity.this);
                     Log.i("TAG", "handleMessage: " + list);
-                    adapter.setListener(new NewsAdapter.OnClickItemListener() {
+                    adapter.setListener(new SearchNewsAdapter.OnClickItemListener() {
                         @Override
                         public void OnClickItem(View view, NewsBean.NewslistBean newslistBean) {
                             NewsBean.NewslistBean bean = newslistBean;
@@ -291,23 +292,14 @@ public class SearchAllNewsActivity extends AppCompatActivity implements View.OnC
      */
     @Override
     public void onLoadMore() {
-        swipeToLoadLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                // mAdapter.add("LOAD MORE:\n" + new Date());
                 count++;
                 new Thread(){
                     @Override
                     public void run() {
                         super.run();
-                        List<NewsBean.NewslistBean> loadList = GetNewsForSearch.getAllNews(loadkey, count);
-                        list.addAll(loadList);
+                        list.addAll(GetNewsForSearch.getAllNews(loadkey, count));
                         handler.sendEmptyMessage(0x12345);
                     }
                 }.start();
-
             }
-        });
     }
-
-}

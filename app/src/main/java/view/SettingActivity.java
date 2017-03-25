@@ -143,7 +143,4 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
-
-
 }
